@@ -519,3 +519,120 @@ window.VeloraUtils = {
     formatDate,
     formatDateTime
 };
+
+/* =========================================
+   EXTENSÕES - INTEGRAÇÃO STRAVA E VALIDAÇÃO AVANÇADA
+========================================= */
+
+const STRAVA_ACTIVITY_TYPES = {
+    RUN: ['Run', 'Walk', 'Hike', 'TrailRun'],
+    RIDE: ['Ride', 'VirtualRide', 'MountainBikeRide', 'GravelRide', 'EBikeRide']
+};
+
+function connectStrava(stravaToken) {
+    localStorage.setItem('velora_strava_token', stravaToken);
+    return true;
+}
+
+function isStravaConnected() {
+    return !!localStorage.getItem('velora_strava_token');
+}
+
+function validateActivityType(activityType, challengeType) {
+    if (challengeType === 'run' && !STRAVA_ACTIVITY_TYPES.RUN.includes(activityType)) {
+        return { valid: false, message: `Atividade de ${activityType} detectada. Este desafio aceita apenas atividades de Corrida/Caminhada.` };
+    }
+    if (challengeType === 'ride' && !STRAVA_ACTIVITY_TYPES.RIDE.includes(activityType)) {
+        return { valid: false, message: `Atividade de ${activityType} detectada. Este desafio aceita apenas atividades de Ciclismo.` };
+    }
+    return { valid: true, message: 'Atividade válida.' };
+}
+
+function validateActivityPace(distance, movingTime, activityType) {
+    const paceKmh = (distance / (movingTime / 3600)).toFixed(2);
+    const limits = {
+        'Run': { min: 3, max: 25 },
+        'Walk': { min: 2, max: 8 },
+        'Ride': { min: 5, max: 60 },
+        'VirtualRide': { min: 5, max: 80 }
+    };
+    const limit = limits[activityType] || { min: 0, max: 100 };
+    if (paceKmh < limit.min || paceKmh > limit.max) {
+        return { valid: false, pace: paceKmh, message: `Velocidade anômala detectada (${paceKmh} km/h).`, flaggedForReview: true };
+    }
+    return { valid: true, pace: paceKmh, message: 'Velocidade dentro dos limites.' };
+}
+
+function processStravaActivity(activity, challenge) {
+    const typeValidation = validateActivityType(activity.type, challenge.type);
+    if (!typeValidation.valid) {
+        return { success: false, reason: typeValidation.message, flaggedForReview: false };
+    }
+    const paceValidation = validateActivityPace(activity.distance / 1000, activity.moving_time, activity.type);
+    if (!paceValidation.valid) {
+        return { success: false, reason: paceValidation.message, flaggedForReview: paceValidation.flaggedForReview };
+    }
+    return { success: true, distance: activity.distance / 1000, pace: paceValidation.pace, message: 'Atividade validada com sucesso!' };
+}
+
+const MAX_VELORA_USAGE_PERCENT = 0.50;
+
+function calculateMaxVelorasForItem(itemPrice, itemType = 'event') {
+    const maxAllowed = itemPrice * MAX_VELORA_USAGE_PERCENT;
+    const userBalance = getWalletBalance();
+    const maxVelorasInReais = velorasToReais(userBalance);
+    return Math.min(maxAllowed, maxVelorasInReais).toFixed(2);
+}
+
+function calculateVelorasToDebit(reaisToDiscount) {
+    return reaisToVeloras(reaisToDiscount);
+}
+
+function processVeloraDiscount(itemPrice, reaisToUse) {
+    const maxAllowed = calculateMaxVelorasForItem(itemPrice);
+    if (reaisToUse > maxAllowed) {
+        return { success: false, message: `Você pode usar no máximo R$ ${maxAllowed} em V$ para este item.` };
+    }
+    const velorasToDebit = calculateVelorasToDebit(reaisToUse);
+    const userBalance = getWalletBalance();
+    if (userBalance < velorasToDebit) {
+        return { success: false, message: `Saldo insuficiente. Você tem ${userBalance.toFixed(2)} V$.` };
+    }
+    removeVeloras(velorasToDebit, `Resgate para compra (R$ ${reaisToUse})`);
+    return { success: true, velorasDebited: velorasToDebit, finalPrice: (itemPrice - reaisToUse).toFixed(2), message: `Desconto de R$ ${reaisToUse} aplicado com sucesso!` };
+}
+
+function validateCouponAdvanced(code, cartItem) {
+    const coupons = getCoupons();
+    const coupon = coupons.find(c => c.code.toUpperCase() === code.toUpperCase());
+    if (!coupon) {
+        return { valid: false, message: 'Cupom não encontrado.' };
+    }
+    if (coupon.limit && coupon.used >= coupon.limit) {
+        return { valid: false, message: 'Cupom expirado (limite de uso atingido).' };
+    }
+    if (coupon.target !== 'all') {
+        if (coupon.target === 'event' && cartItem.type !== 'event') {
+            return { valid: false, message: 'Este cupom é válido apenas para eventos.' };
+        }
+        if (coupon.target === 'store' && cartItem.type !== 'product') {
+            return { valid: false, message: 'Este cupom é válido apenas para produtos da loja.' };
+        }
+        if ((coupon.target === 'event' || coupon.target === 'product') && coupon.targetId !== cartItem.targetId) {
+            return { valid: false, message: `Este cupom não é válido para este ${coupon.target === 'event' ? 'evento' : 'produto'}.` };
+        }
+    }
+    return { valid: true, coupon: coupon };
+}
+
+// Atualizar exports
+window.VeloraUtils.connectStrava = connectStrava;
+window.VeloraUtils.isStravaConnected = isStravaConnected;
+window.VeloraUtils.validateActivityType = validateActivityType;
+window.VeloraUtils.validateActivityPace = validateActivityPace;
+window.VeloraUtils.processStravaActivity = processStravaActivity;
+window.VeloraUtils.calculateMaxVelorasForItem = calculateMaxVelorasForItem;
+window.VeloraUtils.calculateVelorasToDebit = calculateVelorasToDebit;
+window.VeloraUtils.processVeloraDiscount = processVeloraDiscount;
+window.VeloraUtils.validateCouponAdvanced = validateCouponAdvanced;
+window.VeloraUtils.MAX_VELORA_USAGE_PERCENT = MAX_VELORA_USAGE_PERCENT;

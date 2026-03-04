@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo - Velora Sports</title>
+    <link rel="stylesheet" href="global.css">
+    <style>
+        /* Estilos Específicos do Admin */
+        body { 
+            background: linear-gradient(135deg, var(--color-primary-blue) 0%, var(--color-primary-blue-dark) 100%);
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            min-height: 100vh; 
+            padding: var(--spacing-md);
+        }
+        
+        /* Tela de Login */
+        #login-screen { 
+            background: var(--color-white); 
+            padding: var(--spacing-2xl);
+            border-radius: var(--border-radius-xl);
+            box-shadow: var(--shadow-xl);
+            text-align: center; 
+            width: 100%;
+            max-width: 400px;
+            color: var(--color-gray-900);
+        }
+        
+        #login-screen h2 { 
+            color: var(--color-primary-blue); 
+            margin-bottom: var(--spacing-xl);
+            font-size: var(--font-size-2xl);
+        }
+        
+        #login-screen input { 
+            width: 100%; 
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+            border: 1px solid var(--color-gray-300);
+            border-radius: var(--border-radius-md);
+            box-sizing: border-box; 
+            font-size: var(--font-size-base);
+            transition: all var(--transition-fast);
+        }
+        
+        #login-screen input:focus {
+            outline: none;
+            border-color: var(--color-orange);
+            box-shadow: 0 0 0 3px rgba(242, 148, 34, 0.1);
+        }
+        
+        .btn-login { 
+            background: var(--color-orange);
+            color: var(--color-primary-blue);
+            border: none; 
+            width: 100%; 
+            padding: var(--spacing-md);
+            font-weight: var(--font-weight-bold);
+            border-radius: var(--border-radius-md);
+            cursor: pointer; 
+            font-size: var(--font-size-base);
+            transition: all var(--transition-fast);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .btn-login:hover {
+            background: var(--color-orange-dark);
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+
+        /* Painel Administrativo */
+        #admin-panel { 
+            display: none;
+            width: 95%; 
+            max-width: 1400px; 
+            animation: fadeIn var(--transition-base);
+            padding: var(--spacing-xl) 0;
+        }
+        
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(20px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+
+        .header-admin { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: var(--spacing-2xl);
+            border-bottom: 2px solid var(--color-orange);
+            padding-bottom: var(--spacing-lg);
+        }
+        
+        .header-admin h1 { 
+            margin: 0; 
+            font-size: var(--font-size-3xl);
+            color: var(--color-white);
+        }
+        
+        .btn-logout { 
+            background: transparent; 
+            border: 1px solid var(--color-orange);
+            color: var(--color-orange);
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-radius: var(--border-radius-md);
+            cursor: pointer; 
+            font-weight: var(--font-weight-bold);
+            transition: all var(--transition-fast);
+        }
+        
+        .btn-logout:hover {
+            background: var(--color-orange);
+            color: var(--color-primary-blue);
+        }
+
+        /* Grid de Botões */
+        .admin-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); 
+            gap: var(--spacing-lg);
+        }
+        
+        .card-admin { 
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: var(--spacing-xl);
+            border-radius: var(--border-radius-lg);
+            text-decoration: none; 
+            color: var(--color-white);
+            transition: all var(--transition-base);
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            text-align: center;
+            min-height: 160px;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+        }
+        
+        .card-admin:hover { 
+            background: rgba(242, 148, 34, 0.12);
+            border-color: var(--color-orange);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .icon-admin { 
+            font-size: 32px; 
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .card-admin h3 { 
+            margin: 0 0 var(--spacing-sm) 0; 
+            color: var(--color-orange);
+            font-size: var(--font-size-lg);
+        }
+        
+        .card-admin p { 
+            margin: 0; 
+            font-size: var(--font-size-sm);
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.4;
+        }
+
+        /* Destaques por Categoria */
+        .card-marketing { 
+            border: 1px solid var(--color-orange);
+            background: rgba(242, 148, 34, 0.1);
+        }
+        
+        .card-financeiro { 
+            border: 1px solid var(--color-green);
+            background: rgba(0, 166, 80, 0.1);
+        }
+        
+        .card-financeiro h3 { 
+            color: var(--color-green);
+        }
+        
+        .card-strava { 
+            border: 1px solid #FC4C02;
+            background: rgba(252, 76, 2, 0.1);
+        }
+        
+        .card-strava h3 { 
+            color: #FC4C02;
+        }
+
+        /* Mensagens */
+        #erro-login {
+            color: var(--color-error);
+            font-size: var(--font-size-sm);
+            margin-top: var(--spacing-md);
+            display: none;
+            animation: shake 0.3s;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .admin-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: var(--spacing-md);
+            }
+            
+            .header-admin {
+                flex-direction: column;
+                gap: var(--spacing-lg);
+                align-items: flex-start;
+            }
+            
+            .header-admin h1 {
+                font-size: var(--font-size-2xl);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="login-screen">
+        <h2>🔐 Acesso Administrativo</h2>
+        <input type="password" id="admin-pass" placeholder="Senha Mestra" autocomplete="off">
+        <button class="btn-login" onclick="checkPass()">ENTRAR</button>
+        <p id="erro-login">⚠️ Senha incorreta! Tente novamente.</p>
+    </div>
+
+    <div id="admin-panel">
+        <div class="header-admin">
+            <h1>Painel Velora <strong>Admin</strong></h1>
+            <button class="btn-logout" onclick="logout()">🚪 SAIR</button>
+        </div>
+
+        <div class="admin-grid">
+            <a href="base_geral_clientes.html" class="card-admin">
+                <div class="icon-admin">👥</div>
+                <h3>Base de Clientes</h3>
+                <p>Banco de dados completo de atletas e embaixadores.</p>
+            </a>
+
+            <a href="admin_clientes_b2b.html" class="card-admin">
+                <div class="icon-admin">📈</div>
+                <h3>Clientes B2B</h3>
+                <p>Dashboard e dados de empresas com desafios ativos.</p>
+            </a>
+
+            <a href="conec_strava.html" class="card-admin card-strava">
+                <div class="icon-admin">🧡</div>
+                <h3>Contas Strava</h3>
+                <p>Gerenciar conexões e integração de APIs dos atletas.</p>
+            </a>
+
+            <a href="banner_carro.html" class="card-admin card-marketing">
+                <div class="icon-admin">🖼️</div>
+                <h3>Destaques da Home</h3>
+                <p>Gerenciar os banners rotativos do carrossel principal.</p>
+            </a>
+
+            <a href="empresa_cad.html" class="card-admin">
+                <div class="icon-admin">🏢</div>
+                <h3>Empresas Cadastradas</h3>
+                <p>Gerenciar parceiros e cadastros corporativos.</p>
+            </a>
+
+            <a href="espacos_publi.html" class="card-admin card-marketing">
+                <div class="icon-admin">📢</div>
+                <h3>Espaços Publicitários</h3>
+                <p>Administrar blocos de anúncios e publicidade nativa.</p>
+            </a>
+
+            <a href="admin_eventos.html" class="card-admin">
+                <div class="icon-admin">🏆</div>
+                <h3>Gerenciar Eventos</h3>
+                <p>Configurar desafios, cronogramas e monitorar inscrições.</p>
+            </a>
+
+            <a href="gest_cupom.html" class="card-admin card-marketing">
+                <div class="icon-admin">🎟️</div>
+                <h3>Gestão de Cupons</h3>
+                <p>Criar e monitorar códigos de desconto para o portal.</p>
+            </a>
+
+            <a href="gest_v.html" class="card-admin card-financeiro">
+                <div class="icon-admin">💰</div>
+                <h3>Gestão de V$ Velora</h3>
+                <p>Relatório de saldo emitido e abatimentos realizados.</p>
+            </a>
+
+            <a href="admin_leads.html" class="card-admin">
+                <div class="icon-admin">📧</div>
+                <h3>Leads & Contatos</h3>
+                <p>Mensagens recebidas e histórico do Fale Conosco.</p>
+            </a>
+
+            <a href="admin_pedidos.html" class="card-admin">
+                <div class="icon-admin">📦</div>
+                <h3>Pedidos da Loja</h3>
+                <p>Consultar vendas, status de pagamento e rastreio.</p>
+            </a>
+
+            <a href="cadastro_produtos.html" class="card-admin">
+                <div class="icon-admin">🛍️</div>
+                <h3>Produtos (Loja)</h3>
+                <p>Gerenciar estoque, fotos e descrições do catálogo.</p>
+            </a>
+
+            <a href="velora_sports.html" class="card-admin">
+                <div class="icon-admin">🌐</div>
+                <h3>Ver Site Oficial</h3>
+                <p>Visualizar a experiência final do usuário em tempo real.</p>
+            </a>
+        </div>
+    </div>
+
+    <script src="global.js"></script>
+    <script>
+        const SENHA_MESTRA = "velora2026"; 
+
+        // Ao carregar a página, verifica se já está logado
+        window.addEventListener('load', function() {
+            if (VeloraUtils.isAdminLogged()) {
+                showPanel();
+            } else {
+                // Limpa qualquer sessão anterior
+                VeloraUtils.logoutAdmin();
+            }
+        });
+
+        /**
+         * Verifica a senha do administrador
+         */
+        function checkPass() {
+            const pass = document.getElementById('admin-pass').value.trim();
+            const erroMsg = document.getElementById('erro-login');
+            
+            if (!pass) {
+                erroMsg.style.display = 'block';
+                return;
+            }
+            
+            if (pass === SENHA_MESTRA) {
+                erroMsg.style.display = 'none';
+                localStorage.setItem('velora_admin_logged', 'true');
+                localStorage.setItem('velora_admin_login_time', new Date().getTime());
+                showPanel();
+            } else {
+                erroMsg.style.display = 'block';
+                document.getElementById('admin-pass').value = "";
+                document.getElementById('admin-pass').focus();
+            }
+        }
+
+        /**
+         * Mostra o painel administrativo
+         */
+        function showPanel() {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('admin-panel').style.display = 'block';
+            document.body.style.alignItems = 'flex-start';
+            document.body.style.justifyContent = 'center';
+        }
+
+        /**
+         * Faz logout do administrador
+         */
+        function logout() {
+            if (confirm('Tem certeza que deseja sair?')) {
+                VeloraUtils.logoutAdmin();
+            }
+        }
+
+        /**
+         * Permite dar Enter na senha
+         */
+        document.getElementById('admin-pass').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                checkPass();
+            }
+        });
+
+        /**
+         * Verifica se outras páginas administrativas estão sendo acessadas sem autenticação
+         */
+        function protectAdminPages() {
+            const adminPages = [
+                'gest_v.html',
+                'gest_cupom.html',
+                'admin_eventos.html',
+                'base_geral_clientes.html',
+                'conec_strava.html',
+                'empresa_cad.html',
+                'espacos_publi.html',
+                'admin_leads.html',
+                'admin_pedidos.html',
+                'cadastro_produtos.html'
+            ];
+            
+            const currentPage = window.location.pathname.split('/').pop();
+            
+            if (adminPages.includes(currentPage) && !VeloraUtils.isAdminLogged()) {
+                alert('Acesso negado! Você precisa estar logado como administrador.');
+                window.location.href = 'admin.html';
+            }
+        }
+        
+        // Executa proteção ao carregar qualquer página
+        protectAdminPages();
+    </script>
+</body>
+</html>

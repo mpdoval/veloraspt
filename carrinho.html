@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Carrinho - Velora Sports</title>
+    <link rel="stylesheet" href="global.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .site-header {
+            margin-bottom: 100px;
+        }
+
+        .carrinho-wrapper {
+            max-width: 1200px;
+            margin: var(--spacing-2xl) auto var(--spacing-2xl);
+            padding: 0 var(--spacing-lg);
+            width: 100%;
+            box-sizing: border-box;
+            flex: 1;
+        }
+
+        .carrinho-titulo {
+            border-bottom: 2px solid var(--color-orange);
+            padding-bottom: var(--spacing-md);
+            margin-bottom: var(--spacing-2xl);
+            color: var(--color-primary-blue);
+            font-size: var(--font-size-3xl);
+        }
+
+        .carrinho-grid {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: var(--spacing-xl);
+            align-items: start;
+        }
+
+        .itens-lista {
+            background: var(--color-white);
+            border-radius: var(--border-radius-lg);
+            border: 1px solid var(--color-gray-200);
+            padding: var(--spacing-xl);
+            box-shadow: var(--shadow-md);
+        }
+
+        .item-carrinho {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-lg) 0;
+            border-bottom: 1px solid var(--color-gray-200);
+            gap: var(--spacing-lg);
+        }
+
+        .item-carrinho:last-child {
+            border-bottom: none;
+        }
+
+        .item-foto {
+            width: 100px;
+            height: 100px;
+            border-radius: var(--border-radius-md);
+            border: 1px solid var(--color-gray-200);
+            object-fit: contain;
+            background: var(--color-gray-50);
+            flex-shrink: 0;
+        }
+
+        .item-info {
+            flex: 1;
+        }
+
+        .item-info h3 {
+            margin: 0 0 var(--spacing-sm) 0;
+            font-size: var(--font-size-lg);
+            color: var(--color-gray-900);
+        }
+
+        .item-preco-un {
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .preco-riscado {
+            font-size: var(--font-size-sm);
+            color: var(--color-gray-500);
+            text-decoration: line-through;
+            margin-right: var(--spacing-sm);
+        }
+
+        .preco-atual {
+            font-weight: var(--font-weight-bold);
+            color: var(--color-gray-900);
+            font-size: var(--font-size-lg);
+        }
+
+        .badge-velora-item {
+            display: inline-block;
+            font-size: var(--font-size-xs);
+            background: rgba(0, 166, 80, 0.1);
+            color: var(--color-green);
+            padding: var(--spacing-xs) var(--spacing-md);
+            border-radius: var(--border-radius-full);
+            font-weight: var(--font-weight-bold);
+            margin-top: var(--spacing-sm);
+        }
+
+        .item-controles {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+            margin-top: var(--spacing-md);
+            flex-wrap: wrap;
+        }
+
+        .btn-remover {
+            color: var(--color-error);
+            font-size: var(--font-size-sm);
+            cursor: pointer;
+            text-decoration: underline;
+            border: none;
+            background: none;
+            padding: 0;
+            font-weight: var(--font-weight-semibold);
+            transition: color var(--transition-fast);
+        }
+
+        .btn-remover:hover {
+            color: var(--color-error);
+            text-decoration: none;
+        }
+
+        .subtotal-item {
+            font-weight: var(--font-weight-bold);
+            color: var(--color-primary-blue);
+            min-width: 120px;
+            text-align: right;
+            font-size: var(--font-size-lg);
+        }
+
+        /* Resumo do Pedido */
+        .resumo-box {
+            background: var(--color-white);
+            padding: var(--spacing-xl);
+            border-radius: var(--border-radius-lg);
+            border: 1px solid var(--color-gray-200);
+            box-shadow: var(--shadow-md);
+            position: sticky;
+            top: 140px;
+        }
+
+        .resumo-box h3 {
+            margin: 0 0 var(--spacing-lg) 0;
+            font-size: var(--font-size-lg);
+            color: var(--color-primary-blue);
+            border-bottom: 2px solid var(--color-orange);
+            padding-bottom: var(--spacing-md);
+        }
+
+        .resumo-linha {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-md);
+            font-size: var(--font-size-sm);
+            color: var(--color-gray-600);
+        }
+
+        .resumo-linha.desconto {
+            color: var(--color-green);
+            font-weight: var(--font-weight-bold);
+        }
+
+        .resumo-total {
+            display: flex;
+            justify-content: space-between;
+            margin-top: var(--spacing-lg);
+            padding-top: var(--spacing-lg);
+            border-top: 2px solid var(--color-gray-200);
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-primary-blue);
+        }
+
+        /* Cupom */
+        .cupom-section {
+            background: rgba(242, 148, 34, 0.05);
+            border: 1px solid var(--color-orange);
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .cupom-section h4 {
+            margin: 0 0 var(--spacing-md) 0;
+            font-size: var(--font-size-sm);
+            color: var(--color-primary-blue);
+            text-transform: uppercase;
+        }
+
+        .cupom-input-group {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+
+        .cupom-input-group input {
+            flex: 1;
+            padding: var(--spacing-md);
+            border: 1px solid var(--color-gray-300);
+            border-radius: var(--border-radius-sm);
+            font-size: var(--font-size-sm);
+            text-transform: uppercase;
+        }
+
+        .cupom-input-group button {
+            padding: var(--spacing-md) var(--spacing-lg);
+            background: var(--color-orange);
+            color: var(--color-white);
+            border: none;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            font-weight: var(--font-weight-bold);
+            transition: all var(--transition-fast);
+        }
+
+        .cupom-input-group button:hover {
+            background: var(--color-orange-dark);
+        }
+
+        .cupom-msg {
+            font-size: var(--font-size-xs);
+            margin-top: var(--spacing-sm);
+            display: none;
+        }
+
+        .cupom-msg.success {
+            color: var(--color-green);
+            display: block;
+        }
+
+        .cupom-msg.error {
+            color: var(--color-error);
+            display: block;
+        }
+
+        /* Botões */
+        .btn-finalizar {
+            background: var(--color-orange);
+            color: var(--color-white);
+            border: none;
+            width: 100%;
+            padding: var(--spacing-lg);
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-bold);
+            border-radius: var(--border-radius-md);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            margin-top: var(--spacing-lg);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-finalizar:hover {
+            background: var(--color-orange-dark);
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+
+        .btn-continuar {
+            display: block;
+            text-align: center;
+            margin-top: var(--spacing-lg);
+            font-size: var(--font-size-sm);
+            color: var(--color-gray-600);
+            text-decoration: none;
+            transition: color var(--transition-fast);
+        }
+
+        .btn-continuar:hover {
+            color: var(--color-primary-blue);
+        }
+
+        .carrinho-vazio {
+            text-align: center;
+            padding: var(--spacing-2xl) var(--spacing-lg);
+            background: var(--color-white);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-md);
+        }
+
+        .carrinho-vazio h3 {
+            color: var(--color-primary-blue);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .carrinho-vazio .btn {
+            margin-top: var(--spacing-lg);
+        }
+
+        /* Responsividade */
+        @media (max-width: 900px) {
+            .carrinho-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .resumo-box {
+                position: static;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .item-carrinho {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .item-foto {
+                width: 100%;
+                max-width: 200px;
+            }
+
+            .subtotal-item {
+                text-align: left;
+            }
+
+            .cupom-input-group {
+                flex-direction: column;
+            }
+
+            .cupom-input-group input,
+            .cupom-input-group button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="site-header">
+        <a href="index.html" class="logo-velora">
+            <img src="logo-velora.png" alt="Velora Sports" onerror="this.src='https://via.placeholder.com/150x40?text=Logo';">
+        </a>
+        <nav class="nav-menu">
+            <a href="velora_sports.html">Velora Sports</a>
+            <a href="index.html">Velora Empresas</a>
+            <a href="loja_oficial.html">Loja Oficial</a>
+        </nav>
+        
+        <div class="area-login-container">
+            <a href="carrinho.html" class="carrinho-link">
+                🛒 <span id="badgeCarrinho" class="carrinho-contador">0</span>
+            </a>
+            <div class="area-login">
+                <a href="login_cliente_pf.html" class="btn-cliente">ÁREA DO CLIENTE</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="carrinho-wrapper">
+        <h2 class="carrinho-titulo">🛒 Meu Carrinho</h2>
+        <div id="carrinhoConteudo"></div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Velora Sports. Todos os direitos reservados.</p>
+    </footer>
+
+    <script src="global.js"></script>
+    <script>
+        /**
+         * Carrega e exibe o carrinho
+         */
+        function carregarCarrinho() {
+            const carrinho = VeloraUtils.getCart();
+            const container = document.getElementById('carrinhoConteudo');
+            
+            if (carrinho.length === 0) {
+                container.innerHTML = `
+                    <div class="carrinho-vazio">
+                        <h3>Seu carrinho está vazio</h3>
+                        <p>Explore nossa loja e encontre produtos incríveis!</p>
+                        <a href="loja_oficial.html" class="btn btn-secondary">VOLTAR PARA A LOJA</a>
+                    </div>
+                `;
+                return;
+            }
+
+            let totalGeral = 0;
+            let totalDescontos = 0;
+            let itensHtml = '';
+
+            carrinho.forEach((item, index) => {
+                const precoEfetivo = item.preco || item.precoFinal || item.precoComDesconto || item.precoOriginal || 0;
+                const subtotal = precoEfetivo * (item.qtd || 1);
+                totalGeral += subtotal;
+
+                itensHtml += `
+                    <div class="item-carrinho">
+                        <img src="${item.foto || 'https://via.placeholder.com/100?text=Produto'}" class="item-foto" alt="${item.nome}">
+                        <div class="item-info">
+                            <h3>${item.nome}</h3>
+                            <div class="item-preco-un">
+                                ${item.precoOriginal ? `<span class="preco-riscado">${VeloraUtils.formatCurrency(item.precoOriginal)}</span>` : ''}
+                                <span class="preco-atual">${VeloraUtils.formatCurrency(precoEfetivo)}</span>
+                            </div>
+                            
+                            ${(item.velorasGastas || item.velorasUtilizadas) ? `
+                                <div class="badge-velora-item">
+                                    <i class="fa-solid fa-wallet"></i> Pago com V$ ${(item.velorasGastas || item.velorasUtilizadas).toFixed(2)}
+                                </div>
+                            ` : ''}
+
+                            <div class="item-controles">
+                                <span style="font-size: var(--font-size-sm); color: var(--color-gray-600);">Qtd: <strong>${item.qtd || 1}</strong></span>
+                                <button class="btn-remover" onclick="removerItem(${index})">
+                                    <i class="fa-solid fa-trash"></i> Remover
+                                </button>
+                            </div>
+                        </div>
+                        <div class="subtotal-item">${VeloraUtils.formatCurrency(subtotal)}</div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = `
+                <div class="carrinho-grid">
+                    <div class="itens-lista">${itensHtml}</div>
+                    <div class="resumo-box">
+                        <h3>Resumo do Pedido</h3>
+                        
+                        <div class="cupom-section">
+                            <h4>🎟️ Cupom de Desconto</h4>
+                            <div class="cupom-input-group">
+                                <input type="text" id="cupomInput" placeholder="Digite seu cupom" maxlength="20">
+                                <button onclick="aplicarCupom()">Aplicar</button>
+                            </div>
+                            <div id="cupomMsg" class="cupom-msg"></div>
+                        </div>
+
+                        <div class="resumo-linha">
+                            <span>Subtotal</span>
+                            <span>${VeloraUtils.formatCurrency(totalGeral)}</span>
+                        </div>
+                        
+                        <div id="descontoSection" style="display: none;">
+                            <div class="resumo-linha desconto">
+                                <span id="descontoLabel">Desconto</span>
+                                <span id="descontoValor">- R$ 0,00</span>
+                            </div>
+                        </div>
+
+                        <div class="resumo-linha">
+                            <span>Entrega</span>
+                            <span style="color: var(--color-green); font-weight: var(--font-weight-bold);">Grátis</span>
+                        </div>
+
+                        <div class="resumo-total">
+                            <span>Total</span>
+                            <span id="totalFinal">${VeloraUtils.formatCurrency(totalGeral)}</span>
+                        </div>
+
+                        <button class="btn-finalizar" onclick="finalizarPedido()">
+                            ✓ FINALIZAR COMPRA
+                        </button>
+                        <a href="loja_oficial.html" class="btn-continuar">← Continuar Comprando</a>
+                    </div>
+                </div>
+            `;
+        }
+
+        /**
+         * Remove item do carrinho
+         */
+        function removerItem(index) {
+            if (confirm('Deseja remover este item?')) {
+                VeloraUtils.removeFromCart(VeloraUtils.getCart()[index].id);
+                carregarCarrinho();
+            }
+        }
+
+        /**
+         * Aplica cupom de desconto
+         */
+        function aplicarCupom() {
+            const codigo = document.getElementById('cupomInput').value.trim().toUpperCase();
+            const msg = document.getElementById('cupomMsg');
+            const carrinho = VeloraUtils.getCart();
+
+            if (!codigo) {
+                msg.className = 'cupom-msg error';
+                msg.innerText = '⚠️ Digite um código de cupom';
+                return;
+            }
+
+            // Valida cupom (exemplo)
+            const cupom = VeloraUtils.validateCoupon(codigo, 'store');
+
+            if (!cupom) {
+                msg.className = 'cupom-msg error';
+                msg.innerText = '❌ Cupom inválido ou expirado';
+                return;
+            }
+
+            // Aplica desconto
+            const totalOriginal = VeloraUtils.getCartTotal();
+            const desconto = VeloraUtils.applyCouponDiscount(totalOriginal, cupom);
+
+            msg.className = 'cupom-msg success';
+            msg.innerText = `✓ Cupom aplicado! Desconto de ${VeloraUtils.formatCurrency(desconto.discount)}`;
+
+            // Atualiza resumo
+            document.getElementById('descontoSection').style.display = 'block';
+            document.getElementById('descontoValor').innerText = `- ${VeloraUtils.formatCurrency(desconto.discount)}`;
+            document.getElementById('totalFinal').innerText = VeloraUtils.formatCurrency(desconto.finalPrice);
+
+            // Marca cupom como usado
+            VeloraUtils.markCouponAsUsed(codigo);
+        }
+
+        /**
+         * Finaliza o pedido
+         */
+        function finalizarPedido() {
+            const carrinho = VeloraUtils.getCart();
+            
+            if (carrinho.length === 0) {
+                alert('Seu carrinho está vazio!');
+                return;
+            }
+
+            if (confirm('Confirmar pedido? Seus V$ Velora serão processados.')) {
+                // TODO: Integrar com API de pagamento
+                alert('✓ Pedido confirmado com sucesso! Você será redirecionado em breve.');
+                VeloraUtils.clearCart();
+                setTimeout(() => {
+                    window.location.href = 'cliente_pf.html';
+                }, 1500);
+            }
+        }
+
+        // Carrega carrinho ao abrir página
+        document.addEventListener('DOMContentLoaded', carregarCarrinho);
+    </script>
+</body>
+</html>

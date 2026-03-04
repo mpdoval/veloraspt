@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão V$ Velora - Painel Administrativo</title>
+    <link rel="stylesheet" href="global.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, var(--color-primary-blue) 0%, var(--color-primary-blue-dark) 100%);
+            padding: var(--spacing-lg);
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        /* Cabeçalho */
+        .header-page {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-2xl);
+            border-bottom: 2px solid var(--color-green);
+            padding-bottom: var(--spacing-lg);
+            flex-wrap: wrap;
+            gap: var(--spacing-lg);
+        }
+        
+        .header-page h2 {
+            color: var(--color-white);
+            margin: 0;
+            font-size: var(--font-size-3xl);
+        }
+        
+        .btn-back {
+            background: transparent;
+            border: 1px solid var(--color-orange);
+            color: var(--color-orange);
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-radius: var(--border-radius-md);
+            cursor: pointer;
+            text-decoration: none;
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-bold);
+            transition: all var(--transition-fast);
+        }
+        
+        .btn-back:hover {
+            background: rgba(242, 148, 34, 0.1);
+            transform: translateX(-2px);
+        }
+
+        /* Cards de Resumo */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-2xl);
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.08);
+            padding: var(--spacing-xl);
+            border-radius: var(--border-radius-lg);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: all var(--transition-base);
+        }
+        
+        .stat-card:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: var(--color-green);
+            transform: translateY(-4px);
+        }
+        
+        .stat-card h4 {
+            margin: 0 0 var(--spacing-md) 0;
+            font-size: var(--font-size-sm);
+            text-transform: uppercase;
+            opacity: 0.8;
+            color: var(--color-white);
+            letter-spacing: 0.5px;
+        }
+        
+        .stat-card .valor-v {
+            display: block;
+            font-size: 32px;
+            font-weight: var(--font-weight-extrabold);
+            color: var(--color-orange);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .stat-card .valor-r {
+            display: block;
+            font-size: var(--font-size-sm);
+            color: var(--color-green);
+            font-weight: var(--font-weight-bold);
+        }
+
+        /* Layout em duas colunas */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: var(--spacing-xl);
+            margin-bottom: var(--spacing-2xl);
+        }
+
+        /* Tabela de Lançamentos */
+        .table-box {
+            background: var(--color-white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-xl);
+            box-shadow: var(--shadow-lg);
+            overflow-x: auto;
+        }
+        
+        .table-box h3 {
+            color: var(--color-primary-blue);
+            margin: 0 0 var(--spacing-lg) 0;
+            font-size: var(--font-size-xl);
+            border-bottom: 2px solid var(--color-orange);
+            padding-bottom: var(--spacing-md);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            color: var(--color-gray-900);
+        }
+        
+        th {
+            text-align: left;
+            padding: var(--spacing-md);
+            font-size: var(--font-size-xs);
+            text-transform: uppercase;
+            background: var(--color-gray-50);
+            color: var(--color-gray-700);
+            font-weight: var(--font-weight-bold);
+            letter-spacing: 0.5px;
+        }
+        
+        td {
+            padding: var(--spacing-md);
+            border-bottom: 1px solid var(--color-gray-200);
+            font-size: var(--font-size-sm);
+        }
+        
+        tbody tr:hover {
+            background: var(--color-gray-50);
+        }
+        
+        .entrada {
+            color: var(--color-green);
+            font-weight: var(--font-weight-bold);
+        }
+        
+        .saida {
+            color: var(--color-error);
+            font-weight: var(--font-weight-bold);
+        }
+
+        /* Sidebar de Distribuição */
+        .sidebar-box {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-xl);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+        
+        .sidebar-box h3 {
+            font-size: var(--font-size-lg);
+            margin: 0 0 var(--spacing-lg) 0;
+            color: var(--color-orange);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: var(--spacing-md);
+        }
+        
+        .progress-item {
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: var(--font-size-xs);
+            margin-bottom: var(--spacing-sm);
+            color: var(--color-white);
+            font-weight: var(--font-weight-semibold);
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius-full);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--color-green), var(--color-green-light));
+            border-radius: var(--border-radius-full);
+            transition: width var(--transition-slow);
+        }
+
+        /* Gráfico */
+        .chart-container {
+            background: var(--color-white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-xl);
+            box-shadow: var(--shadow-lg);
+            margin-bottom: var(--spacing-2xl);
+            position: relative;
+            height: 400px;
+        }
+        
+        .chart-container h3 {
+            color: var(--color-primary-blue);
+            margin: 0 0 var(--spacing-lg) 0;
+            font-size: var(--font-size-xl);
+            border-bottom: 2px solid var(--color-orange);
+            padding-bottom: var(--spacing-md);
+        }
+
+        /* Filtros */
+        .filter-row {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-xl);
+            flex-wrap: wrap;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius-md);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .filter-row select {
+            background: var(--color-white);
+            color: var(--color-gray-900);
+            border: 1px solid var(--color-gray-300);
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--border-radius-sm);
+            font-size: var(--font-size-sm);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+        
+        .filter-row select:focus {
+            outline: none;
+            border-color: var(--color-orange);
+            box-shadow: 0 0 0 3px rgba(242, 148, 34, 0.1);
+        }
+
+        /* Responsividade */
+        @media (max-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar-box {
+                position: static;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-page {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .table-box {
+                overflow-x: auto;
+            }
+            
+            table {
+                font-size: var(--font-size-xs);
+            }
+            
+            th, td {
+                padding: var(--spacing-sm);
+            }
+            
+            .filter-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .filter-row select {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header-page">
+            <h2>Gestão Financeira <strong>V$ Velora</strong></h2>
+            <a href="admin.html" class="btn-back">← VOLTAR AO PAINEL</a>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h4>Total Emitido (Passivo)</h4>
+                <span class="valor-v">V$ 152.400,00</span>
+                <span class="valor-r">Equivalente: R$ 50.292,00</span>
+            </div>
+            <div class="stat-card">
+                <h4>Total Resgatado (Realizado)</h4>
+                <span class="valor-v">V$ 42.150,00</span>
+                <span class="valor-r">Abatimento Real: R$ 13.909,50</span>
+            </div>
+            <div class="stat-card" style="border-color: var(--color-green); background: rgba(0, 166, 80, 0.08);">
+                <h4>Saldo em Circulação</h4>
+                <span class="valor-v" style="color: var(--color-green);">V$ 110.250,00</span>
+                <span class="valor-r">Projeção: R$ 36.382,50</span>
+            </div>
+        </div>
+
+        <div class="filter-row">
+            <span style="color: var(--color-white); font-weight: var(--font-weight-bold); font-size: var(--font-size-sm); text-transform: uppercase;">🔍 FILTRAR POR:</span>
+            <select id="filterOrganizer" onchange="applyFilters()">
+                <option value="">Todos os Organizadores</option>
+                <option value="velora">Velora Sports</option>
+                <option value="partners">Empresas Parceiras</option>
+            </select>
+            <select id="filterEvent" onchange="applyFilters()">
+                <option value="">Todos os Eventos</option>
+                <option value="desafio180">Desafio 180 Easy</option>
+                <option value="maratona">Maratona 2026</option>
+            </select>
+            <select id="filterPeriod" onchange="applyFilters()">
+                <option value="">Último Mês</option>
+                <option value="week">Última Semana</option>
+                <option value="month">Último Mês</option>
+                <option value="quarter">Último Trimestre</option>
+                <option value="year">Último Ano</option>
+            </select>
+        </div>
+
+        <div class="chart-container">
+            <h3>📊 Movimentação de V$ (Últimos 30 dias)</h3>
+            <canvas id="chartVelora"></canvas>
+        </div>
+
+        <div class="main-grid">
+            <div class="table-box">
+                <h3>Últimas Movimentações</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Atleta</th>
+                            <th>Ação / Motivo</th>
+                            <th>Valor</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>02/03/2026</td>
+                            <td>Gustavo Cesar</td>
+                            <td>Resgate: Inscrição Desafio 180</td>
+                            <td class="saida">- V$ 90,00</td>
+                        </tr>
+                        <tr>
+                            <td>01/03/2026</td>
+                            <td>Maria Oliveira</td>
+                            <td>Prêmio: 1º Lugar Maratona</td>
+                            <td class="entrada">+ V$ 100,00</td>
+                        </tr>
+                        <tr>
+                            <td>28/02/2026</td>
+                            <td>Ricardo Santos</td>
+                            <td>Bônus: Novo Cadastro</td>
+                            <td class="entrada">+ V$ 100,00</td>
+                        </tr>
+                        <tr>
+                            <td>25/02/2026</td>
+                            <td>Ana Costa</td>
+                            <td>Resgate: Compra Camiseta Pro</td>
+                            <td class="saida">- V$ 45,00</td>
+                        </tr>
+                        <tr>
+                            <td>20/02/2026</td>
+                            <td>Felipe Lima</td>
+                            <td>Bônus: Indicação de Amigo</td>
+                            <td class="entrada">+ V$ 20,00</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="sidebar-box">
+                <h3>💡 Onde usam as Veloras?</h3>
+                
+                <div class="progress-item">
+                    <div class="progress-label"><span>Inscrições em Eventos</span><span>65%</span></div>
+                    <div class="progress-bar"><div class="progress-fill" style="width: 65%;"></div></div>
+                </div>
+
+                <div class="progress-item">
+                    <div class="progress-label"><span>Produtos da Loja</span><span>25%</span></div>
+                    <div class="progress-bar"><div class="progress-fill" style="width: 25%; background: var(--color-orange);"></div></div>
+                </div>
+
+                <div class="progress-item">
+                    <div class="progress-label"><span>Desafios Corporativos</span><span>10%</span></div>
+                    <div class="progress-bar"><div class="progress-fill" style="width: 10%; background: #3b82f6;"></div></div>
+                </div>
+
+                <div style="margin-top: var(--spacing-xl); padding-top: var(--spacing-lg); border-top: 1px solid rgba(255, 255, 255, 0.1); font-size: var(--font-size-xs); line-height: 1.6; opacity: 0.8; color: var(--color-white);">
+                    <p style="margin: 0 0 var(--spacing-sm) 0;"><strong>ℹ️ Informação Importante:</strong></p>
+                    <p style="margin: 0;">A taxa de conversão atual é de <strong>1 V$ = R$ 0,33</strong>. Todos os arredondamentos financeiros seguem a precisão de 2 casas decimais.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="global.js"></script>
+    <script>
+        // Verifica autenticação de admin
+        VeloraUtils.requireAdminAuth();
+
+        // Inicializa gráfico
+        function initChart() {
+            const ctx = document.getElementById('chartVelora').getContext('2d');
+            
+            const data = {
+                labels: ['01/02', '05/02', '10/02', '15/02', '20/02', '25/02', '01/03', '02/03'],
+                datasets: [
+                    {
+                        label: 'Entradas (V$)',
+                        data: [100, 150, 200, 180, 220, 250, 280, 300],
+                        borderColor: VeloraUtils.VELORA_CONVERSION_RATE ? '#00a650' : '#10b981',
+                        backgroundColor: 'rgba(0, 166, 80, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        pointRadius: 5,
+                        pointBackgroundColor: '#00a650'
+                    },
+                    {
+                        label: 'Saídas (V$)',
+                        data: [50, 80, 120, 100, 140, 160, 180, 200],
+                        borderColor: '#ef4444',
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        pointRadius: 5,
+                        pointBackgroundColor: '#ef4444'
+                    }
+                ]
+            };
+
+            new Chart(ctx, {
+                type: 'line',
+                data: data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                font: { size: 12, weight: 'bold' },
+                                padding: 15,
+                                usePointStyle: true
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { font: { size: 11 } },
+                            grid: { color: 'rgba(0, 0, 0, 0.05)' }
+                        },
+                        x: {
+                            ticks: { font: { size: 11 } },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        /**
+         * Aplica filtros ao relatório
+         */
+        function applyFilters() {
+            const organizer = document.getElementById('filterOrganizer').value;
+            const event = document.getElementById('filterEvent').value;
+            const period = document.getElementById('filterPeriod').value;
+            
+            console.log('Filtros aplicados:', { organizer, event, period });
+            // TODO: Integrar com API para filtrar dados
+        }
+
+        // Inicializa ao carregar
+        document.addEventListener('DOMContentLoaded', initChart);
+    </script>
+</body>
+</html>

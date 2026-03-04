@@ -1,0 +1,26 @@
+# Logs
+*.log
+log/
+
+# Dependency directories
+node_modules/
+
+# IDEs and editors
+.vscode/
+.idea/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+build/
+dist/
+
+# Temporary files
+*.tmp
+*.swp
+*~
+
+# Rclone config
+.gdrive-rclone.ini

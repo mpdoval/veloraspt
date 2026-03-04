@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão & BI de Cupons - Velora Sports</title>
+    <link rel="stylesheet" href="global.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, var(--color-primary-blue) 0%, var(--color-primary-blue-dark) 100%);
+            padding: var(--spacing-lg);
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .header-page {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-2xl);
+            border-bottom: 2px solid var(--color-orange);
+            padding-bottom: var(--spacing-lg);
+            flex-wrap: wrap;
+            gap: var(--spacing-lg);
+        }
+
+        .header-page h2 {
+            color: var(--color-white);
+            margin: 0;
+            font-size: var(--font-size-3xl);
+        }
+
+        .btn-back {
+            background: transparent;
+            border: 1px solid var(--color-orange);
+            color: var(--color-orange);
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-radius: var(--border-radius-md);
+            cursor: pointer;
+            text-decoration: none;
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-bold);
+            transition: all var(--transition-fast);
+        }
+
+        .btn-back:hover {
+            background: rgba(242, 148, 34, 0.1);
+        }
+
+        /* Dashboard BI */
+        .bi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-2xl);
+        }
+
+        .bi-card {
+            background: rgba(255, 255, 255, 0.08);
+            padding: var(--spacing-xl);
+            border-radius: var(--border-radius-lg);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: all var(--transition-base);
+        }
+
+        .bi-card:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: var(--color-orange);
+            transform: translateY(-4px);
+        }
+
+        .bi-card h4 {
+            margin: 0 0 var(--spacing-md) 0;
+            font-size: var(--font-size-xs);
+            text-transform: uppercase;
+            opacity: 0.8;
+            color: var(--color-white);
+            letter-spacing: 0.5px;
+        }
+
+        .bi-card .valor {
+            display: block;
+            font-size: 28px;
+            font-weight: var(--font-weight-extrabold);
+            color: var(--color-orange);
+        }
+
+        /* Formulário de Geração */
+        .admin-section {
+            background: var(--color-white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-xl);
+            margin-bottom: var(--spacing-2xl);
+            color: var(--color-gray-900);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .admin-section h3 {
+            margin: 0 0 var(--spacing-lg) 0;
+            color: var(--color-primary-blue);
+            border-bottom: 2px solid var(--color-orange);
+            padding-bottom: var(--spacing-md);
+            font-size: var(--font-size-xl);
+        }
+
+        .grid-gerador {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: var(--spacing-lg);
+            margin-top: var(--spacing-lg);
+        }
+
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        .field-group label {
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-primary-blue);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .field-group input,
+        .field-group select {
+            padding: var(--spacing-md);
+            border-radius: var(--border-radius-md);
+            border: 1px solid var(--color-gray-300);
+            outline: none;
+            font-size: var(--font-size-base);
+            transition: all var(--transition-fast);
+        }
+
+        .field-group input:focus,
+        .field-group select:focus {
+            border-color: var(--color-orange);
+            box-shadow: 0 0 0 3px rgba(242, 148, 34, 0.1);
+        }
+
+        .btn-gerar {
+            background: var(--color-green);
+            color: var(--color-white);
+            border: none;
+            padding: var(--spacing-md) var(--spacing-xl);
+            border-radius: var(--border-radius-md);
+            font-weight: var(--font-weight-bold);
+            cursor: pointer;
+            margin-top: var(--spacing-lg);
+            transition: all var(--transition-fast);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-gerar:hover {
+            background: var(--color-green-dark);
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+
+        /* Filtros */
+        .filter-row {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-xl);
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius-md);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            flex-wrap: wrap;
+        }
+
+        .filter-row span {
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-white);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .filter-row select {
+            background: var(--color-white);
+            color: var(--color-gray-900);
+            border: 1px solid var(--color-gray-300);
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--border-radius-sm);
+            font-size: var(--font-size-sm);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .filter-row select:focus {
+            outline: none;
+            border-color: var(--color-orange);
+            box-shadow: 0 0 0 3px rgba(242, 148, 34, 0.1);
+        }
+
+        /* Tabela BI */
+        .table-container {
+            background: var(--color-white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-xl);
+            color: var(--color-gray-900);
+            overflow-x: auto;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .table-container h3 {
+            color: var(--color-primary-blue);
+            margin: 0 0 var(--spacing-lg) 0;
+            font-size: var(--font-size-xl);
+            border-bottom: 2px solid var(--color-orange);
+            padding-bottom: var(--spacing-md);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: var(--spacing-md);
+            font-size: var(--font-size-xs);
+            background: var(--color-gray-50);
+            color: var(--color-gray-700);
+            border-bottom: 2px solid var(--color-gray-200);
+            font-weight: var(--font-weight-bold);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: var(--spacing-md);
+            border-bottom: 1px solid var(--color-gray-200);
+            font-size: var(--font-size-sm);
+        }
+
+        tbody tr:hover {
+            background: var(--color-gray-50);
+        }
+
+        .badge-cupom {
+            font-weight: var(--font-weight-extrabold);
+            color: var(--color-primary-blue);
+            background: rgba(242, 148, 34, 0.15);
+            padding: var(--spacing-xs) var(--spacing-md);
+            border-radius: var(--border-radius-full);
+            font-family: var(--font-mono);
+            display: inline-block;
+        }
+
+        .badge-alvo {
+            font-size: var(--font-size-xs);
+            background: var(--color-gray-100);
+            padding: var(--spacing-xs) var(--spacing-md);
+            border-radius: var(--border-radius-sm);
+            font-weight: var(--font-weight-bold);
+            display: inline-block;
+        }
+
+        .badge-alvo.all { background: rgba(0, 45, 98, 0.1); color: var(--color-primary-blue); }
+        .badge-alvo.store { background: rgba(242, 148, 34, 0.1); color: var(--color-orange); }
+        .badge-alvo.event { background: rgba(0, 166, 80, 0.1); color: var(--color-green); }
+        .badge-alvo.product { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+
+        .status-ativo { color: var(--color-green); font-weight: var(--font-weight-bold); }
+        .status-esgotado { color: var(--color-error); font-weight: var(--font-weight-bold); }
+
+        /* Responsividade */
+        @media (max-width: 1024px) {
+            .bi-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-page {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .bi-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .grid-gerador {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filter-row select {
+                width: 100%;
+            }
+
+            table {
+                font-size: var(--font-size-xs);
+            }
+
+            th, td {
+                padding: var(--spacing-sm);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header-page">
+            <h2>Gestão & <strong>BI de Cupons</strong></h2>
+            <a href="admin.html" class="btn-back">← VOLTAR AO PAINEL</a>
+        </div>
+
+        <div class="bi-grid">
+            <div class="bi-card">
+                <h4>Em Rotatividade</h4>
+                <span class="valor">R$ 15.400,00</span>
+            </div>
+            <div class="bi-card">
+                <h4>Já Aplicado</h4>
+                <span class="valor" style="color: var(--color-green);">R$ 4.250,00</span>
+            </div>
+            <div class="bi-card">
+                <h4>Falta Aplicar</h4>
+                <span class="valor" style="color: #3b82f6;">R$ 11.150,00</span>
+            </div>
+            <div class="bi-card">
+                <h4>Taxa de Uso</h4>
+                <span class="valor">68%</span>
+            </div>
+        </div>
+
+        <div class="admin-section">
+            <h3><i class="fa-solid fa-plus-circle"></i> Gerar Novo Cupom</h3>
+            <div class="grid-gerador">
+                <div class="field-group">
+                    <label>Código</label>
+                    <input type="text" id="c-code" placeholder="Ex: VELORA10" maxlength="20">
+                </div>
+                <div class="field-group">
+                    <label>Tipo</label>
+                    <select id="c-type">
+                        <option value="p">Porcentagem (%)</option>
+                        <option value="f">Valor Fixo (R$)</option>
+                    </select>
+                </div>
+                <div class="field-group">
+                    <label>Valor Desconto</label>
+                    <input type="number" id="c-val" placeholder="0.00" min="0" step="0.01">
+                </div>
+                <div class="field-group">
+                    <label>Aplicar Em:</label>
+                    <select id="c-target" onchange="toggleTargetDetails()">
+                        <option value="all">Todo o Site</option>
+                        <option value="store">Somente Loja Oficial</option>
+                        <option value="event">Evento Específico</option>
+                        <option value="product">Produto Específico</option>
+                    </select>
+                </div>
+                <div class="field-group" id="target-detail-box" style="opacity: 0.3; pointer-events: none;">
+                    <label>ID / Nome do Alvo</label>
+                    <input type="text" id="c-target-id" placeholder="ID ou Nome">
+                </div>
+                <div class="field-group">
+                    <label>Limite Uso</label>
+                    <input type="number" id="c-limit" placeholder="Qtd total" min="1">
+                </div>
+            </div>
+            <button class="btn-gerar" onclick="gerarCupom()">
+                <i class="fa-solid fa-check-circle"></i> CRIAR E ATIVAR CUPOM
+            </button>
+        </div>
+
+        <div class="filter-row">
+            <span><i class="fa-solid fa-filter"></i> FILTRAR RELATÓRIO:</span>
+            <select id="filterOrganizer" onchange="applyFilters()">
+                <option value="">Todos os Organizadores</option>
+                <option value="velora">Velora Sports</option>
+                <option value="partners">Empresas Parceiras</option>
+            </select>
+            <select id="filterEvent" onchange="applyFilters()">
+                <option value="">Todos os Eventos</option>
+                <option value="desafio180">Desafio 180 Easy</option>
+                <option value="maratona">Maratona 2026</option>
+            </select>
+            <select id="filterStatus" onchange="applyFilters()">
+                <option value="">Todos os Status</option>
+                <option value="ativo">Apenas Ativos</option>
+                <option value="esgotado">Apenas Esgotados</option>
+            </select>
+        </div>
+
+        <div class="table-container">
+            <h3>📊 Performance de Cupons Ativos</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Direcionamento</th>
+                        <th>Desconto</th>
+                        <th>Uso / Limite</th>
+                        <th>Economia (R$)</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="listaCupons">
+                    <tr>
+                        <td><span class="badge-cupom">VELORA10</span></td>
+                        <td><span class="badge-alvo all">SITE TODO</span></td>
+                        <td>10%</td>
+                        <td>145 / 500</td>
+                        <td>R$ 2.450,00</td>
+                        <td><span class="status-ativo">✓ ATIVO</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge-cupom">CORRIDA50</span></td>
+                        <td><span class="badge-alvo event">EVENTO: Desafio 180</span></td>
+                        <td>R$ 50,00</td>
+                        <td>20 / 20</td>
+                        <td>R$ 1.000,00</td>
+                        <td><span class="status-esgotado">✗ ESGOTADO</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge-cupom">LOJA25</span></td>
+                        <td><span class="badge-alvo store">LOJA OFICIAL</span></td>
+                        <td>25%</td>
+                        <td>82 / 200</td>
+                        <td>R$ 3.200,00</td>
+                        <td><span class="status-ativo">✓ ATIVO</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="global.js"></script>
+    <script>
+        // Verifica autenticação de admin
+        VeloraUtils.requireAdminAuth();
+
+        /**
+         * Alterna visibilidade do campo de detalhes do alvo
+         */
+        function toggleTargetDetails() {
+            const target = document.getElementById('c-target').value;
+            const box = document.getElementById('target-detail-box');
+            
+            if (target === 'event' || target === 'product') {
+                box.style.opacity = "1";
+                box.style.pointerEvents = "auto";
+            } else {
+                box.style.opacity = "0.3";
+                box.style.pointerEvents = "none";
+            }
+        }
+
+        /**
+         * Gera novo cupom
+         */
+        function gerarCupom() {
+            const code = document.getElementById('c-code').value.toUpperCase().trim();
+            const type = document.getElementById('c-type').value;
+            const val = document.getElementById('c-val').value;
+            const target = document.getElementById('c-target').value;
+            const targetId = document.getElementById('c-target-id').value;
+            const limit = document.getElementById('c-limit').value || '∞';
+
+            if (!code || !val) {
+                alert('⚠️ Preencha os campos obrigatórios (Código e Valor)!');
+                return;
+            }
+
+            if ((target === 'event' || target === 'product') && !targetId) {
+                alert('⚠️ Especifique o ID/Nome do alvo!');
+                return;
+            }
+
+            const targetLabel = {
+                'all': 'SITE TODO',
+                'store': 'LOJA OFICIAL',
+                'event': `EVENTO: ${targetId}`,
+                'product': `PRODUTO: ${targetId}`
+            }[target];
+
+            const tabela = document.getElementById('listaCupons');
+            const novaLinha = tabela.insertRow(0);
+            
+            novaLinha.innerHTML = `
+                <td><span class="badge-cupom">${code}</span></td>
+                <td><span class="badge-alvo ${target}">${targetLabel}</span></td>
+                <td>${type === 'p' ? val + '%' : 'R$ ' + parseFloat(val).toFixed(2)}</td>
+                <td>0 / ${limit}</td>
+                <td>R$ 0,00</td>
+                <td><span class="status-ativo">✓ ATIVO</span></td>
+            `;
+
+            alert(`✓ Cupom "${code}" criado com sucesso para: ${targetLabel}`);
+            
+            // Limpa formulário
+            document.getElementById('c-code').value = '';
+            document.getElementById('c-val').value = '';
+            document.getElementById('c-target-id').value = '';
+            document.getElementById('c-limit').value = '';
+        }
+
+        /**
+         * Aplica filtros ao relatório
+         */
+        function applyFilters() {
+            const organizer = document.getElementById('filterOrganizer').value;
+            const event = document.getElementById('filterEvent').value;
+            const status = document.getElementById('filterStatus').value;
+            
+            console.log('Filtros aplicados:', { organizer, event, status });
+            // TODO: Integrar com API para filtrar dados
+        }
+    </script>
+</body>
+</html>

@@ -3,475 +3,501 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Área do Atleta - Velora Sports</title>
+    <title>Meu Dashboard - Velora Sports</title>
     <link rel="stylesheet" href="global.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
             padding-top: 80px;
-            background: var(--color-light-bg);
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
         }
 
-        /* Header Customizado */
-        .header-pf {
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--spacing-xl);
+        }
+
+        /* Saldo V$ em Destaque */
+        .wallet-card {
             background: linear-gradient(135deg, var(--color-primary-blue) 0%, var(--color-primary-blue-dark) 100%);
-            padding: var(--spacing-lg) var(--spacing-xl);
+            color: var(--color-white);
+            padding: var(--spacing-2xl);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-xl);
+            margin-bottom: var(--spacing-2xl);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            color: var(--color-white);
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: var(--z-sticky);
-            box-shadow: var(--shadow-lg);
         }
 
-        .logo-pf img {
-            max-height: 40px;
-            transition: transform var(--transition-fast);
-        }
-
-        .logo-pf:hover img {
-            transform: scale(1.05);
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-xl);
-        }
-
-        .wallet-header {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-sm);
-            background: rgba(255, 255, 255, 0.1);
-            padding: var(--spacing-sm) var(--spacing-lg);
-            border-radius: var(--border-radius-full);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            text-decoration: none;
-            transition: all var(--transition-fast);
-            cursor: pointer;
-        }
-
-        .wallet-header:hover {
-            background: rgba(242, 148, 34, 0.15);
-            border-color: var(--color-orange);
-        }
-
-        .wallet-header i {
-            color: var(--color-orange);
-            font-size: 18px;
-        }
-
-        .wallet-header span {
-            font-weight: var(--font-weight-bold);
+        .wallet-info h2 {
             font-size: var(--font-size-sm);
-            color: var(--color-white);
-        }
-
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border: 2px solid var(--color-orange);
-            border-radius: var(--border-radius-full);
-            overflow: hidden;
-            background: rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .user-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .badge-embaixador {
-            background: linear-gradient(135deg, #b27b00 0%, #d4a017 100%);
-            color: var(--color-white);
-            font-size: var(--font-size-xs);
-            padding: var(--spacing-xs) var(--spacing-md);
-            border-radius: var(--border-radius-sm);
-            font-weight: var(--font-weight-bold);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            display: inline-block;
+            letter-spacing: 1px;
+            opacity: 0.9;
+            margin: 0 0 var(--spacing-md) 0;
         }
 
-        .btn-sair {
-            color: var(--color-white);
-            text-decoration: none;
-            font-size: var(--font-size-xs);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: var(--spacing-sm) var(--spacing-md);
-            border-radius: var(--border-radius-sm);
-            transition: all var(--transition-fast);
-            cursor: pointer;
-            background: transparent;
-        }
-
-        .btn-sair:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: var(--color-orange);
-        }
-
-        /* Container */
-        .container-pf {
-            max-width: 1200px;
-            margin: var(--spacing-2xl) auto;
-            padding: 0 var(--spacing-lg);
-        }
-
-        .grid-dashboard {
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            gap: var(--spacing-2xl);
-        }
-
-        /* Sidebar */
-        .sidebar-pf {
-            background: var(--color-white);
-            border-radius: var(--border-radius-lg);
-            padding: var(--spacing-lg);
-            box-shadow: var(--shadow-md);
-            height: fit-content;
-            position: sticky;
-            top: 100px;
-        }
-
-        .nav-side {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .nav-side li {
+        .wallet-balance {
+            font-size: var(--font-size-5xl);
+            font-weight: var(--font-weight-bold);
             margin-bottom: var(--spacing-sm);
         }
 
-        .nav-side a {
+        .wallet-conversion {
+            font-size: var(--font-size-lg);
+            opacity: 0.8;
+        }
+
+        .wallet-actions {
             display: flex;
-            align-items: center;
             gap: var(--spacing-md);
-            padding: var(--spacing-md);
+        }
+
+        .btn-wallet {
+            background: var(--color-orange);
             color: var(--color-primary-blue);
-            text-decoration: none;
+            padding: var(--spacing-md) var(--spacing-lg);
+            border: none;
             border-radius: var(--border-radius-md);
-            font-weight: var(--font-weight-semibold);
+            cursor: pointer;
+            font-weight: var(--font-weight-bold);
             transition: all var(--transition-fast);
-            font-size: var(--font-size-sm);
         }
 
-        .nav-side a:hover {
-            background: var(--color-gray-50);
-            transform: translateX(4px);
-        }
-
-        .nav-side a.active {
-            background: linear-gradient(135deg, var(--color-primary-blue) 0%, var(--color-primary-blue-dark) 100%);
-            color: var(--color-white);
-            box-shadow: var(--shadow-md);
-        }
-
-        .nav-side i {
-            font-size: 18px;
-            width: 20px;
-            text-align: center;
-        }
-
-        /* Cards */
-        .card-pf {
-            background: var(--color-white);
-            border-radius: var(--border-radius-lg);
-            padding: var(--spacing-xl);
-            box-shadow: var(--shadow-md);
-            margin-bottom: var(--spacing-xl);
-            transition: all var(--transition-base);
-        }
-
-        .card-pf:hover {
-            box-shadow: var(--shadow-lg);
+        .btn-wallet:hover {
+            background: #f0a000;
             transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
         }
 
-        .card-pf h2 {
+        /* Grid Principal */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: var(--spacing-xl);
+            margin-bottom: var(--spacing-2xl);
+        }
+
+        /* Desafios Ativos */
+        .challenges-section {
+            background: var(--color-white);
+            padding: var(--spacing-xl);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-md);
+        }
+
+        .challenges-section h3 {
             color: var(--color-primary-blue);
             margin: 0 0 var(--spacing-lg) 0;
             font-size: var(--font-size-xl);
             border-bottom: 2px solid var(--color-orange);
             padding-bottom: var(--spacing-md);
+            text-transform: uppercase;
+        }
+
+        .challenge-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #f0f3f7 100%);
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius-md);
+            margin-bottom: var(--spacing-lg);
+            border-left: 4px solid var(--color-orange);
+        }
+
+        .challenge-title {
+            font-weight: var(--font-weight-bold);
+            color: var(--color-primary-blue);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--color-gray-200);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--color-orange) 0%, var(--color-green) 100%);
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: var(--font-size-xs);
+            color: var(--color-gray-600);
+        }
+
+        /* Medalharia */
+        .medals-section {
+            background: var(--color-white);
+            padding: var(--spacing-xl);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-md);
+        }
+
+        .medals-section h3 {
+            color: var(--color-primary-blue);
+            margin: 0 0 var(--spacing-lg) 0;
+            font-size: var(--font-size-xl);
+            border-bottom: 2px solid var(--color-orange);
+            padding-bottom: var(--spacing-md);
+            text-transform: uppercase;
+        }
+
+        .medals-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--spacing-md);
+        }
+
+        .medal-item {
+            text-align: center;
+            padding: var(--spacing-lg);
+            background: var(--color-gray-50);
+            border-radius: var(--border-radius-md);
+            transition: all var(--transition-fast);
+        }
+
+        .medal-item:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .medal-icon {
+            font-size: 40px;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .medal-name {
+            font-weight: var(--font-weight-bold);
+            color: var(--color-primary-blue);
+            font-size: var(--font-size-sm);
+        }
+
+        .medal-date {
+            font-size: var(--font-size-xs);
+            color: var(--color-gray-600);
+            margin-top: var(--spacing-sm);
+        }
+
+        /* Nível de Lealdade */
+        .loyalty-section {
+            background: linear-gradient(135deg, var(--color-primary-blue) 0%, var(--color-primary-blue-dark) 100%);
+            color: var(--color-white);
+            padding: var(--spacing-xl);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-md);
+        }
+
+        .loyalty-section h3 {
+            margin: 0 0 var(--spacing-lg) 0;
+            font-size: var(--font-size-lg);
+            text-transform: uppercase;
+        }
+
+        .loyalty-level {
+            font-size: var(--font-size-3xl);
+            font-weight: var(--font-weight-bold);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .loyalty-benefits {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .loyalty-benefits li {
+            padding: var(--spacing-sm) 0;
+            font-size: var(--font-size-sm);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .loyalty-benefits li:last-child {
+            border-bottom: none;
+        }
+
+        /* Seções Inferiores */
+        .dashboard-sections {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--spacing-xl);
+            margin-bottom: var(--spacing-2xl);
+        }
+
+        .section-card {
+            background: var(--color-white);
+            padding: var(--spacing-xl);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-md);
+        }
+
+        .section-card h3 {
+            color: var(--color-primary-blue);
+            margin: 0 0 var(--spacing-lg) 0;
+            font-size: var(--font-size-lg);
+            border-bottom: 2px solid var(--color-orange);
+            padding-bottom: var(--spacing-md);
+            text-transform: uppercase;
+        }
+
+        .quick-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .quick-links li {
+            margin-bottom: var(--spacing-md);
+        }
+
+        .quick-links a {
             display: flex;
             align-items: center;
             gap: var(--spacing-md);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .card-pf h2 i {
-            color: var(--color-orange);
-        }
-
-        /* Stats Row */
-        .stats-row {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: var(--spacing-lg);
-            margin-top: var(--spacing-lg);
-        }
-
-        .stat-box {
+            padding: var(--spacing-md);
             background: var(--color-gray-50);
-            padding: var(--spacing-lg);
             border-radius: var(--border-radius-md);
-            text-align: center;
-            border: 1px solid var(--color-gray-200);
+            color: var(--color-primary-blue);
             text-decoration: none;
+            font-weight: var(--font-weight-semibold);
             transition: all var(--transition-fast);
-            cursor: pointer;
         }
 
-        .stat-box:hover {
-            border-color: var(--color-orange);
-            background: rgba(242, 148, 34, 0.05);
-            transform: translateY(-2px);
+        .quick-links a:hover {
+            background: var(--color-orange);
+            color: var(--color-white);
+            transform: translateX(4px);
         }
 
-        .stat-box.coin-highlight {
-            border: 2px solid var(--color-green);
-            background: rgba(0, 166, 80, 0.05);
+        .strava-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--spacing-lg);
         }
 
-        .stat-box.coin-highlight:hover {
-            box-shadow: 0 5px 15px rgba(0, 166, 80, 0.15);
+        .stat-item {
+            text-align: center;
+            padding: var(--spacing-lg);
+            background: var(--color-gray-50);
+            border-radius: var(--border-radius-md);
         }
 
-        .stat-val {
-            display: block;
+        .stat-value {
             font-size: var(--font-size-2xl);
             font-weight: var(--font-weight-bold);
             color: var(--color-primary-blue);
             margin-bottom: var(--spacing-sm);
         }
 
-        .stat-box.coin-highlight .stat-val {
-            color: var(--color-green);
-        }
-
-        .stat-lab {
+        .stat-label {
             font-size: var(--font-size-xs);
             color: var(--color-gray-600);
             text-transform: uppercase;
-            font-weight: var(--font-weight-bold);
-            letter-spacing: 0.5px;
-            display: block;
         }
 
-        .btn-mini-extrato {
-            display: inline-block;
-            margin-top: var(--spacing-md);
-            font-size: var(--font-size-xs);
-            color: var(--color-green);
-            text-decoration: none;
-            font-weight: var(--font-weight-bold);
-            border-top: 1px solid rgba(0, 166, 80, 0.2);
-            padding-top: var(--spacing-sm);
-        }
-
-        /* Progresso */
-        .progress-section {
-            background: linear-gradient(135deg, rgba(242, 148, 34, 0.08) 0%, rgba(242, 148, 34, 0.02) 100%);
-            padding: var(--spacing-lg);
-            border-radius: var(--border-radius-md);
-            border-left: 4px solid var(--color-orange);
-        }
-
-        .progress-section .titulo {
-            font-weight: var(--font-weight-bold);
-            color: var(--color-primary-blue);
-            display: block;
-            margin-bottom: var(--spacing-sm);
-            font-size: var(--font-size-base);
-        }
-
-        .progress-section .descricao {
-            font-size: var(--font-size-sm);
-            color: var(--color-gray-600);
-            margin-bottom: var(--spacing-md);
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 12px;
-            background: var(--color-gray-200);
-            border-radius: var(--border-radius-full);
-            overflow: hidden;
-            border: 1px solid var(--color-gray-300);
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--color-orange) 0%, var(--color-orange-light) 100%);
-            border-radius: var(--border-radius-full);
-            transition: width var(--transition-slow);
-        }
-
-        /* Responsividade */
         @media (max-width: 1024px) {
-            .grid-dashboard {
+            .dashboard-grid {
                 grid-template-columns: 1fr;
             }
-
-            .sidebar-pf {
-                position: static;
+            .dashboard-sections {
+                grid-template-columns: 1fr;
             }
-
-            .stats-row {
+            .medals-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
         }
 
         @media (max-width: 768px) {
-            .header-pf {
-                padding: var(--spacing-md) var(--spacing-lg);
-                flex-wrap: wrap;
-                gap: var(--spacing-md);
+            .wallet-card {
+                flex-direction: column;
+                text-align: center;
             }
-
-            .user-info {
-                gap: var(--spacing-md);
+            .wallet-actions {
+                justify-content: center;
+                width: 100%;
             }
-
-            .stats-row {
+            .medals-grid {
                 grid-template-columns: 1fr;
             }
-
-            .container-pf {
-                padding: 0 var(--spacing-md);
+            .strava-stats {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
 
-    <header class="header-pf">
-        <div class="logo-pf">
-            <a href="velora_sports.html"><img src="velora_logo_solit.png" alt="Velora Sports" onerror="this.src='https://via.placeholder.com/150x40?text=Logo';"></a>
-        </div>
-        <div class="user-info">
-            <a href="extrato_velora.html" class="wallet-header" title="Ver meu Extrato Velora">
-                <i class="fa-solid fa-wallet"></i>
-                <span id="walletDisplay">V$ 150,00</span>
-            </a>
-
-            <div style="text-align: right;">
-                <span style="display: block; font-weight: var(--font-weight-bold); font-size: var(--font-size-sm);" id="userName">Gustavo Cesar</span>
-                <span class="badge-embaixador">⭐ Embaixador</span>
-            </div>
-            <div class="user-avatar">
-                <img src="https://via.placeholder.com/40" alt="Avatar" onerror="this.src='https://via.placeholder.com/40?text=Avatar';"/>
-            </div>
-            <button class="btn-sair" onclick="logout()">SAIR</button>
+    <header class="site-header">
+        <a href="index.html" class="logo-velora">
+            <img src="logo_velora_empresas.png" alt="Velora" onerror="this.src='https://via.placeholder.com/150x40?text=Logo';">
+        </a>
+        <nav class="nav-menu">
+            <a href="index.html">Home</a>
+            <a href="cliente_pf.html" style="color: var(--color-orange);">Meu Dashboard</a>
+            <a href="carrinho.html">Loja</a>
+        </nav>
+        <div class="area-login-container">
+            <a href="carrinho.html" class="carrinho-link">🛒 <span id="badgeCarrinho" class="carrinho-contador">0</span></a>
+            <a href="index.html" class="btn-cliente" onclick="logoutClient(); return false;">SAIR</a>
         </div>
     </header>
 
-    <div class="container-pf">
-        <div class="grid-dashboard">
-            
-            <aside class="sidebar-pf">
-                <ul class="nav-side">
-                    <li><a href="cliente_pf.html" class="active"><i class="fa-solid fa-chart-line"></i> Resumo</a></li>
-                    <li><a href="extrato_velora.html"><i class="fa-solid fa-wallet"></i> Meu Extrato V$</a></li>
-                    <li><a href="meu_eventos_pf.html"><i class="fa-solid fa-trophy"></i> Meus Eventos</a></li>
-                    <li><a href="meus_pedidos_pf.html"><i class="fa-solid fa-box-open"></i> Meus Pedidos</a></li>
-                    <li><a href="alterar_cadastro_pf.html"><i class="fa-solid fa-user-gear"></i> Alterar Cadastro</a></li>
+    <div class="dashboard-container">
+        <!-- Carteira V$ em Destaque -->
+        <div class="wallet-card">
+            <div class="wallet-info">
+                <h2>Sua Carteira V$</h2>
+                <div class="wallet-balance" data-velora-balance>V$ 450,00</div>
+                <div class="wallet-conversion">Equivalente a R$ 148,50</div>
+            </div>
+            <div class="wallet-actions">
+                <button class="btn-wallet" onclick="alert('Resgate de V$ - Em breve!')">Usar V$</button>
+                <button class="btn-wallet" onclick="alert('Histórico de transações')">Histórico</button>
+            </div>
+        </div>
+
+        <!-- Grid Principal -->
+        <div class="dashboard-grid">
+            <!-- Desafios Ativos -->
+            <div class="challenges-section">
+                <h3>🚀 Meus Desafios Ativos</h3>
+                
+                <div class="challenge-card">
+                    <div class="challenge-title">Desafio 180 Easy</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 65%;"></div>
+                    </div>
+                    <div class="progress-text">
+                        <span>117 km de 180 km</span>
+                        <span style="color: var(--color-green);">65% Completo</span>
+                    </div>
+                    <p style="font-size: var(--font-size-xs); color: var(--color-gray-600); margin: var(--spacing-md) 0 0 0;">Válido até: 30/06/2026</p>
+                </div>
+
+                <div class="challenge-card">
+                    <div class="challenge-title">Corrida Solidária Março</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 30%;"></div>
+                    </div>
+                    <div class="progress-text">
+                        <span>15 km de 50 km</span>
+                        <span style="color: var(--color-orange);">30% Completo</span>
+                    </div>
+                    <p style="font-size: var(--font-size-xs); color: var(--color-gray-600); margin: var(--spacing-md) 0 0 0;">Válido até: 31/03/2026</p>
+                </div>
+            </div>
+
+            <!-- Medalharia -->
+            <div class="medals-section">
+                <h3>🏆 Minhas Conquistas</h3>
+                <div class="medals-grid">
+                    <div class="medal-item">
+                        <div class="medal-icon">🥇</div>
+                        <div class="medal-name">100 km</div>
+                        <div class="medal-date">15/02/2026</div>
+                    </div>
+                    <div class="medal-item">
+                        <div class="medal-icon">🏅</div>
+                        <div class="medal-name">Consistência</div>
+                        <div class="medal-date">20/02/2026</div>
+                    </div>
+                    <div class="medal-item">
+                        <div class="medal-icon" style="opacity: 0.3;">🎯</div>
+                        <div class="medal-name" style="opacity: 0.5;">200 km</div>
+                        <div class="medal-date" style="opacity: 0.5;">Em breve...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Nível de Lealdade -->
+        <div class="loyalty-section">
+            <h3>⭐ Seu Nível de Lealdade</h3>
+            <div class="loyalty-level">PRATA</div>
+            <p style="margin-bottom: var(--spacing-lg);">Você está a apenas 50 km de atingir o nível OURO!</p>
+            <ul class="loyalty-benefits">
+                <li>✓ Cupons de desconto exclusivos</li>
+                <li>✓ Cashback 5% em compras na loja</li>
+                <li>✓ Acesso antecipado a novos eventos</li>
+                <li>→ Próximo: Embaixador (100 eventos)</li>
+            </ul>
+        </div>
+
+        <!-- Seções Inferiores -->
+        <div class="dashboard-sections">
+            <!-- Meus Pedidos -->
+            <div class="section-card">
+                <h3>📦 Meus Pedidos</h3>
+                <ul class="quick-links">
+                    <li><a href="#"><i class="fa-solid fa-box"></i> Camiseta Velora 2026 - Em Trânsito</a></li>
+                    <li><a href="#"><i class="fa-solid fa-check"></i> Troféu Desafio 180 - Entregue</a></li>
+                    <li><a href="#"><i class="fa-solid fa-hourglass"></i> Meia Compressão - Preparando</a></li>
                 </ul>
-            </aside>
+            </div>
 
-            <main>
-                <section class="card-pf">
-                    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--spacing-lg);">
-                        <div>
-                            <h3 style="margin: 0 0 var(--spacing-sm) 0; color: var(--color-primary-blue); font-size: var(--font-size-2xl);">Olá, <span id="userNameWelcome">Gustavo Cesar</span>!</h3>
-                            <span class="badge-embaixador" style="font-size: var(--font-size-sm); padding: var(--spacing-sm) var(--spacing-md);">⭐ Embaixador Velora</span>
-                            <p style="margin: var(--spacing-md) 0 0 0; color: var(--color-gray-600); font-size: var(--font-size-sm);">CPF: 000.000.000-00 | E-mail: gustavo@exemplo.com</p>
-                        </div>
-                        <div style="text-align: right;">
-                            <div style="display: inline-flex; align-items: center; gap: var(--spacing-sm); font-size: var(--font-size-xs); font-weight: var(--font-weight-bold); color: #FC4C02; padding: var(--spacing-sm) var(--spacing-lg); background: rgba(252, 76, 2, 0.1); border-radius: var(--border-radius-full); border: 1px solid rgba(252, 76, 2, 0.2);">
-                                <i class="fa-brands fa-strava"></i> CONECTADO
-                            </div>
-                        </div>
+            <!-- Performance Strava -->
+            <div class="section-card">
+                <h3>📊 Performance Strava</h3>
+                <div class="strava-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">1.245 km</div>
+                        <div class="stat-label">Total em 2026</div>
                     </div>
-                </section>
-
-                <section class="card-pf">
-                    <h2><i class="fa-solid fa-gauge-high"></i> Dashboard do Atleta</h2>
-                    <div class="stats-row">
-                        <a href="extrato_velora.html" class="stat-box coin-highlight">
-                            <span class="stat-val"><small style="font-size: 0.7em;">V$</small> 150,00</span>
-                            <span class="stat-lab">Saldo Velora</span>
-                            <span class="btn-mini-extrato">VER EXTRATO</span>
-                        </a>
-                        <div class="stat-box">
-                            <span class="stat-val">452.8 <small style="font-size: 0.7em;">km</small></span>
-                            <span class="stat-lab">Total Percorrido</span>
-                        </div>
-                        <div class="stat-box">
-                            <span class="stat-val">02</span>
-                            <span class="stat-lab">Eventos Ativos</span>
-                        </div>
-                        <div class="stat-box">
-                            <span class="stat-val">12</span>
-                            <span class="stat-lab">Conquistas</span>
-                        </div>
+                    <div class="stat-item">
+                        <div class="stat-value">45</div>
+                        <div class="stat-label">Atividades</div>
                     </div>
-                </section>
-
-                <section class="card-pf">
-                    <h2><i class="fa-solid fa-flag-checkered"></i> Progresso Atual</h2>
-                    <div class="progress-section">
-                        <span class="titulo">Desafio 180 Dias Easy</span>
-                        <span class="descricao">Progresso: 142km de 180km</span>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 78%;"></div>
-                        </div>
-                        <div style="margin-top: var(--spacing-md); font-size: var(--font-size-xs); color: var(--color-gray-600);">
-                            <strong>78% concluído</strong> • Faltam 38km para completar o desafio
-                        </div>
+                    <div class="stat-item">
+                        <div class="stat-value">8,2 km/h</div>
+                        <div class="stat-label">Pace Médio</div>
                     </div>
-                </section>
-            </main>
+                    <div class="stat-item">
+                        <div class="stat-value">1.850 m</div>
+                        <div class="stat-label">Elevação Total</div>
+                    </div>
+                </div>
+            </div>
 
+            <!-- Minhas Inscrições -->
+            <div class="section-card">
+                <h3>🎫 Minhas Inscrições</h3>
+                <ul class="quick-links">
+                    <li><a href="#"><i class="fa-solid fa-calendar"></i> Desafio 180 Easy - Ativo</a></li>
+                    <li><a href="#"><i class="fa-solid fa-calendar"></i> Corrida Solidária - Ativo</a></li>
+                    <li><a href="#"><i class="fa-solid fa-calendar"></i> Pedal Corporativo - Próximo</a></li>
+                </ul>
+            </div>
+
+            <!-- Sugestões Para Você -->
+            <div class="section-card">
+                <h3>💡 Sugestões Para Você</h3>
+                <ul class="quick-links">
+                    <li><a href="#"><i class="fa-solid fa-shirt"></i> Camiseta Compressão - R$ 89,90</a></li>
+                    <li><a href="#"><i class="fa-solid fa-shoe-prints"></i> Tênis Running - R$ 299,90</a></li>
+                    <li><a href="#"><i class="fa-solid fa-watch"></i> Relógio Esportivo - R$ 1.299,00</a></li>
+                </ul>
+            </div>
         </div>
     </div>
 
     <script src="global.js"></script>
     <script>
-        // Verifica autenticação do cliente
-        VeloraUtils.requireClientAuth();
-
-        /**
-         * Faz logout do usuário
-         */
-        function logout() {
-            if (confirm('Deseja sair da sua conta?')) {
-                VeloraUtils.logoutClient();
-            }
+        // Proteção de acesso
+        if (!isClientLogged()) {
+            alert('Você precisa estar logado para acessar esta página.');
+            window.location.href = 'login_cliente_pf.html';
         }
 
-        /**
-         * Atualiza dados do usuário na página
-         */
-        document.addEventListener('DOMContentLoaded', function() {
-            const userName = localStorage.getItem('velora_client_name') || 'Usuário';
-            const wallet = VeloraUtils.getWalletBalance();
-
-            document.getElementById('userName').innerText = userName;
-            document.getElementById('userNameWelcome').innerText = userName;
-            document.getElementById('walletDisplay').innerText = `V$ ${wallet.toFixed(2)}`;
+        // Atualizar exibição de V$
+        window.addEventListener('load', function() {
+            updateWalletDisplay();
         });
     </script>
 </body>

@@ -481,7 +481,7 @@
         }
 
         /**
-         * Aplica cupom de desconto
+         * Aplica cupom de desconto com validação avançada por target
          */
         function aplicarCupom() {
             const codigo = document.getElementById('cupomInput').value.trim().toUpperCase();
@@ -494,29 +494,38 @@
                 return;
             }
 
-            // Valida cupom (exemplo)
-            const cupom = VeloraUtils.validateCoupon(codigo, 'store');
-
-            if (!cupom) {
+            if (carrinho.length === 0) {
                 msg.className = 'cupom-msg error';
-                msg.innerText = '❌ Cupom inválido ou expirado';
+                msg.innerText = '❌ Seu carrinho está vazio';
                 return;
             }
 
-            // Aplica desconto
+            // Valida cupom com validação avançada por target
+            const primeiroItem = carrinho[0];
+            const validacao = VeloraAdvanced.validateCouponAdvanced(codigo, primeiroItem);
+
+            if (!validacao.valid) {
+                msg.className = 'cupom-msg error';
+                msg.innerText = `❌ ${validacao.message}`;
+                return;
+            }
+
+            // Registra uso do cupom para BI
             const totalOriginal = VeloraUtils.getCartTotal();
-            const desconto = VeloraUtils.applyCouponDiscount(totalOriginal, cupom);
+            const desconto = (totalOriginal * validacao.coupon.discount) / 100;
+            VeloraAdvanced.recordCouponUsage(codigo, desconto, primeiroItem.eventId || 'store', VeloraUtils.getClientEmail());
 
             msg.className = 'cupom-msg success';
-            msg.innerText = `✓ Cupom aplicado! Desconto de ${VeloraUtils.formatCurrency(desconto.discount)}`;
+            msg.innerText = `✓ Cupom aplicado! Desconto de ${VeloraUtils.formatCurrency(desconto)}`;
 
             // Atualiza resumo
             document.getElementById('descontoSection').style.display = 'block';
-            document.getElementById('descontoValor').innerText = `- ${VeloraUtils.formatCurrency(desconto.discount)}`;
-            document.getElementById('totalFinal').innerText = VeloraUtils.formatCurrency(desconto.finalPrice);
+            document.getElementById('descontoValor').innerText = `- ${VeloraUtils.formatCurrency(desconto)}`;
+            const totalFinal = totalOriginal - desconto;
+            document.getElementById('totalFinal').innerText = VeloraUtils.formatCurrency(totalFinal);
 
-            // Marca cupom como usado
-            VeloraUtils.markCouponAsUsed(codigo);
+            // Armazena cupom aplicado
+            localStorage.setItem('velora_cupom_aplicado', codigo);
         }
 
         /**

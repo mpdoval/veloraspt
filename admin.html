@@ -316,6 +316,12 @@
                 <h3>Ver Site Oficial</h3>
                 <p>Visualizar a experiência final do usuário em tempo real.</p>
             </a>
+
+            <div class="card-admin" style="cursor: pointer;" onclick="mostrarBICupons()">
+                <div class="icon-admin">📊</div>
+                <h3>BI de Cupons</h3>
+                <p>Cupons mais queimadores de margem.</p>
+            </div>
         </div>
     </div>
 
@@ -415,3 +421,29 @@
     </script>
 </body>
 </html>
+
+
+        function mostrarBICupons() {
+            const report = VeloraAdvanced.generateCouponBIReport();
+            const tbody = document.getElementById('biCuponsBody');
+            
+            if (Object.keys(report.couponStats).length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="padding: 20px; text-align: center; color: #999;">Nenhum cupom foi utilizado ainda.</td></tr>';
+            } else {
+                const topCoupons = VeloraAdvanced.getTopCouponsByDiscount(10);
+                tbody.innerHTML = topCoupons.map(coupon => `
+                    <tr>
+                        <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold; color: var(--color-primary-blue);">${coupon.code}</td>
+                        <td style="padding: 12px; border: 1px solid #ddd; text-align: center;">${coupon.usageCount}</td>
+                        <td style="padding: 12px; border: 1px solid #ddd; text-align: right; color: var(--color-orange); font-weight: bold;">R$ ${coupon.totalDiscount.toFixed(2)}</td>
+                        <td style="padding: 12px; border: 1px solid #ddd; text-align: center;">${coupon.events.length}</td>
+                    </tr>
+                `).join('');
+            }
+            
+            document.getElementById('biCuponsReport').style.display = 'block';
+        }
+
+        function fecharBICupons() {
+            document.getElementById('biCuponsReport').style.display = 'none';
+        }

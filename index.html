@@ -3,184 +3,342 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Velora Empresas - Transforme seu Time</title>
+    <title>Velora Sports - Marketplace de Eventos & Experiências</title>
     <link rel="stylesheet" href="global.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Estilos Específicos da Home */
-        .hero-section {
-            padding: var(--spacing-3xl) 0;
-            margin-top: 80px;
+        body {
             background: var(--color-light-bg);
         }
 
+        .hero-section {
+            padding: var(--spacing-3xl) 0;
+            margin-top: 80px;
+            background: linear-gradient(135deg, var(--color-primary-blue) 0%, var(--color-primary-blue-dark) 100%);
+            color: var(--color-white);
+        }
+
         .hero-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-xl);
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: var(--spacing-2xl);
         }
 
-        .hero-content {
-            flex: 1.2;
-        }
-
         .hero-content h1 {
             font-size: var(--font-size-5xl);
             line-height: 1.1;
             margin-bottom: var(--spacing-xl);
-            color: var(--color-primary-blue);
+            color: var(--color-white);
         }
 
-        .hero-content h1 span.highlight {
-            background-color: var(--color-orange);
-            color: var(--color-primary-blue);
-            padding: 0 var(--spacing-sm);
-            border-radius: var(--border-radius-sm);
+        .hero-content h1 .highlight {
+            color: var(--color-orange);
         }
 
         .hero-content p {
             font-size: var(--font-size-lg);
-            color: var(--color-gray-700);
             margin-bottom: var(--spacing-xl);
-            max-width: 90%;
+            opacity: 0.95;
         }
 
-        .hero-image {
-            flex: 0.8;
+        .hero-buttons {
             display: flex;
-            justify-content: flex-end;
-        }
-
-        .hero-image img {
-            max-width: 100%;
-            height: auto;
-            border-radius: var(--border-radius-lg);
-            box-shadow: var(--shadow-xl);
-        }
-
-        /* Stats Cards */
-        .stats-section {
-            padding: var(--spacing-2xl) 0;
-            background: var(--color-white);
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: var(--spacing-xl);
-        }
-
-        .stat-card-home {
-            background: var(--color-primary-blue);
-            color: var(--color-white);
-            padding: var(--spacing-xl);
-            border-radius: var(--border-radius-lg);
-            display: flex;
-            align-items: center;
             gap: var(--spacing-lg);
-            box-shadow: var(--shadow-lg);
-            transition: transform var(--transition-base);
         }
 
-        .stat-card-home:hover {
-            transform: translateY(-5px);
+        .btn-hero {
+            padding: var(--spacing-lg) var(--spacing-2xl);
+            border: none;
+            border-radius: var(--border-radius-md);
+            cursor: pointer;
+            font-weight: var(--font-weight-bold);
+            transition: all var(--transition-fast);
         }
 
-        .stat-icon {
-            font-size: 40px;
-            color: var(--color-orange);
-        }
-
-        .stat-info h3 {
-            font-size: var(--font-size-3xl);
-            color: var(--color-orange);
-            margin: 0;
-        }
-
-        .stat-info p {
-            font-size: var(--font-size-sm);
-            margin: 0;
-            line-height: 1.4;
-        }
-
-        /* CTA Section */
-        .cta-banner {
+        .btn-hero-primary {
             background: var(--color-orange);
-            padding: var(--spacing-2xl) 0;
-            text-align: center;
             color: var(--color-primary-blue);
         }
 
-        .cta-banner h2 {
-            font-size: var(--font-size-3xl);
-            margin-bottom: var(--spacing-xl);
-            color: var(--color-primary-blue);
+        .btn-hero-primary:hover {
+            background: #f0a000;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
         }
 
-        /* Features Section */
-        .features-section {
-            padding: var(--spacing-3xl) 0;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: var(--spacing-xl);
-            margin-top: var(--spacing-2xl);
-        }
-
-        .feature-item {
-            text-align: center;
-        }
-
-        .feature-icon {
-            width: 80px;
-            height: 80px;
-            background: var(--color-primary-blue);
+        .btn-hero-secondary {
+            background: transparent;
             color: var(--color-white);
-            border-radius: var(--border-radius-full);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 30px;
-            margin: 0 auto var(--spacing-lg);
-            border: 4px solid var(--color-orange);
+            border: 2px solid var(--color-white);
         }
 
-        .feature-item h3 {
+        .btn-hero-secondary:hover {
+            background: var(--color-white);
+            color: var(--color-primary-blue);
+        }
+
+        /* Marketplace Categories */
+        .marketplace-section {
+            padding: var(--spacing-3xl) 0;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-left: var(--spacing-xl);
+            padding-right: var(--spacing-xl);
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: var(--spacing-2xl);
+        }
+
+        .section-title h2 {
+            font-size: var(--font-size-4xl);
+            color: var(--color-primary-blue);
+            margin: 0 0 var(--spacing-md) 0;
+        }
+
+        .section-title p {
             font-size: var(--font-size-lg);
-            margin-bottom: var(--spacing-md);
-        }
-
-        .feature-item p {
-            font-size: var(--font-size-sm);
             color: var(--color-gray-600);
         }
 
-        /* Responsividade */
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--spacing-xl);
+            margin-bottom: var(--spacing-3xl);
+        }
+
+        .category-card {
+            background: var(--color-white);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            transition: all var(--transition-base);
+            cursor: pointer;
+        }
+
+        .category-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .category-icon {
+            font-size: 60px;
+            padding: var(--spacing-2xl);
+            text-align: center;
+            background: linear-gradient(135deg, var(--color-primary-blue), var(--color-primary-blue-dark));
+            color: var(--color-orange);
+        }
+
+        .category-content {
+            padding: var(--spacing-xl);
+        }
+
+        .category-content h3 {
+            color: var(--color-primary-blue);
+            margin: 0 0 var(--spacing-md) 0;
+            font-size: var(--font-size-lg);
+        }
+
+        .category-content p {
+            color: var(--color-gray-600);
+            font-size: var(--font-size-sm);
+            margin: 0;
+        }
+
+        .category-content .count {
+            display: inline-block;
+            margin-top: var(--spacing-md);
+            padding: var(--spacing-xs) var(--spacing-md);
+            background: var(--color-gray-50);
+            border-radius: var(--border-radius-sm);
+            font-size: var(--font-size-xs);
+            color: var(--color-primary-blue);
+            font-weight: var(--font-weight-bold);
+        }
+
+        /* Corporate Section */
+        .corporate-section {
+            background: linear-gradient(135deg, var(--color-orange) 0%, #f0a000 100%);
+            padding: var(--spacing-3xl) 0;
+            color: var(--color-white);
+        }
+
+        .corporate-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-xl);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-2xl);
+            align-items: center;
+        }
+
+        .corporate-content h2 {
+            font-size: var(--font-size-4xl);
+            margin: 0 0 var(--spacing-lg) 0;
+            line-height: 1.2;
+        }
+
+        .corporate-content p {
+            font-size: var(--font-size-lg);
+            margin-bottom: var(--spacing-lg);
+            opacity: 0.95;
+        }
+
+        .corporate-benefits {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 var(--spacing-xl) 0;
+        }
+
+        .corporate-benefits li {
+            padding: var(--spacing-md) 0;
+            font-size: var(--font-size-md);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .corporate-benefits li:before {
+            content: "✓";
+            font-weight: bold;
+            font-size: var(--font-size-xl);
+        }
+
+        .btn-corporate {
+            background: var(--color-primary-blue);
+            color: var(--color-white);
+            padding: var(--spacing-lg) var(--spacing-2xl);
+            border: none;
+            border-radius: var(--border-radius-md);
+            cursor: pointer;
+            font-weight: var(--font-weight-bold);
+            transition: all var(--transition-fast);
+        }
+
+        .btn-corporate:hover {
+            background: var(--color-primary-blue-dark);
+            transform: translateY(-2px);
+        }
+
+        .corporate-image {
+            text-align: center;
+        }
+
+        .corporate-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: var(--border-radius-lg);
+        }
+
+        /* Featured Events */
+        .featured-section {
+            padding: var(--spacing-3xl) 0;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-left: var(--spacing-xl);
+            padding-right: var(--spacing-xl);
+        }
+
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--spacing-lg);
+        }
+
+        .event-card {
+            background: var(--color-white);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            transition: all var(--transition-base);
+        }
+
+        .event-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .event-image {
+            width: 100%;
+            height: 150px;
+            background: linear-gradient(135deg, var(--color-primary-blue), var(--color-orange));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            color: var(--color-white);
+        }
+
+        .event-info {
+            padding: var(--spacing-lg);
+        }
+
+        .event-info h4 {
+            color: var(--color-primary-blue);
+            margin: 0 0 var(--spacing-sm) 0;
+            font-size: var(--font-size-md);
+        }
+
+        .event-info p {
+            color: var(--color-gray-600);
+            font-size: var(--font-size-sm);
+            margin: 0 0 var(--spacing-md) 0;
+        }
+
+        .event-price {
+            color: var(--color-green);
+            font-weight: var(--font-weight-bold);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .btn-event {
+            width: 100%;
+            background: var(--color-primary-blue);
+            color: var(--color-white);
+            padding: var(--spacing-md);
+            border: none;
+            border-radius: var(--border-radius-md);
+            cursor: pointer;
+            font-weight: var(--font-weight-bold);
+            transition: all var(--transition-fast);
+        }
+
+        .btn-event:hover {
+            background: var(--color-primary-blue-dark);
+        }
+
         @media (max-width: 1024px) {
-            .hero-container {
-                flex-direction: column;
-                text-align: center;
+            .categories-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
-            .hero-content h1 {
-                font-size: var(--font-size-4xl);
-            }
-            .hero-content p {
-                max-width: 100%;
-            }
-            .stats-grid {
+            .corporate-container {
                 grid-template-columns: 1fr;
             }
-            .features-grid {
+            .events-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
         }
 
         @media (max-width: 768px) {
-            .features-grid {
+            .hero-container {
+                flex-direction: column;
+                text-align: center;
+            }
+            .categories-grid {
                 grid-template-columns: 1fr;
+            }
+            .events-grid {
+                grid-template-columns: 1fr;
+            }
+            .hero-content h1 {
+                font-size: var(--font-size-3xl);
             }
         }
     </style>
@@ -189,112 +347,226 @@
 
     <header class="site-header">
         <a href="index.html" class="logo-velora">
-            <img src="logo_velora_empresas.png" alt="Velora Sports" onerror="this.src='https://via.placeholder.com/200x40?text=Logo+Velora';">
+            <img src="logo_velora_empresas.png" alt="Velora" onerror="this.src='https://via.placeholder.com/150x40?text=Velora';">
         </a>
         <nav class="nav-menu">
             <a href="index.html" style="color: var(--color-orange);">Home</a>
-            <a href="loja_oficial.html">Loja Oficial</a>
-            <a href="admin.html">Painel Admin</a>
+            <a href="#marketplace">Marketplace</a>
+            <a href="#corporate">Corporativo</a>
+            <a href="cliente_pf.html">Meu Dashboard</a>
         </nav>
         <div class="area-login-container">
-            <a href="carrinho.html" class="carrinho-link">
-                🛒 <span id="badgeCarrinho" class="carrinho-contador">0</span>
-            </a>
-            <a href="login_cliente_pf.html" class="btn-cliente">ÁREA DO CLIENTE</a>
+            <a href="carrinho.html" class="carrinho-link">🛒 <span id="badgeCarrinho" class="carrinho-contador">0</span></a>
+            <a href="login_cliente_pf.html" class="btn-cliente">ENTRAR</a>
         </div>
     </header>
 
+    <!-- Hero Section -->
     <section class="hero-section">
-        <div class="container hero-container">
+        <div class="hero-container">
             <div class="hero-content">
-                <h1>A plataforma que <span class="highlight">transforma</span> a rotina do seu time em uma cultura de <span class="highlight">saúde e performance.</span></h1>
-                <p>Combata o sedentarismo corporativo e fortaleça o pertencimento do colaborador. O cuidado real com as pessoas é a ferramenta de produtividade mais poderosa do mercado moderno.</p>
-                <div class="flex gap-md">
-                    <a href="login_cliente_pf.html" class="btn btn-secondary btn-large">COMEÇAR AGORA</a>
-                    <a href="admin.html" class="btn btn-outline btn-large">PAINEL ADMIN</a>
+                <h1>Bem-vindo ao <span class="highlight">Velora Sports</span></h1>
+                <p>Marketplace de eventos esportivos, experiências e tickets. Conecte-se com atletas, empresas e comunidades.</p>
+                <div class="hero-buttons">
+                    <button class="btn-hero btn-hero-primary" onclick="document.getElementById('marketplace').scrollIntoView({behavior: 'smooth'})">Explorar Eventos</button>
+                    <button class="btn-hero btn-hero-secondary" onclick="document.getElementById('corporate').scrollIntoView({behavior: 'smooth'})">Para Empresas</button>
                 </div>
             </div>
             <div class="hero-image">
-                <img src="mulher_index1.png" alt="Velora Sports" onerror="this.src='https://via.placeholder.com/500x600?text=Velora+Sports';">
+                <img src="hero_image.png" alt="Velora" onerror="this.src='https://via.placeholder.com/400x300?text=Velora+Sports';">
             </div>
         </div>
     </section>
 
-    <section class="stats-section">
-        <div class="container">
-            <div class="stats-grid">
-                <div class="stat-card-home">
-                    <div class="stat-icon"><i class="fa-solid fa-brain"></i></div>
-                    <div class="stat-info">
-                        <h3>20%</h3>
-                        <p>de ganho em funções cognitivas e clareza mental.</p>
-                    </div>
+    <!-- Marketplace Categories -->
+    <section class="marketplace-section" id="marketplace">
+        <div class="section-title">
+            <h2>🎯 Categorias de Eventos</h2>
+            <p>Encontre o tipo de evento perfeito para você</p>
+        </div>
+
+        <div class="categories-grid">
+            <div class="category-card">
+                <div class="category-icon">🏃</div>
+                <div class="category-content">
+                    <h3>Esportes & Desafios</h3>
+                    <p>Corridas, ciclismo, trilhas e desafios virtuais com auditoria Strava.</p>
+                    <span class="count">142 eventos</span>
                 </div>
-                <div class="stat-card-home">
-                    <div class="stat-icon"><i class="fa-solid fa-chart-line"></i></div>
-                    <div class="stat-info">
-                        <h3>35%</h3>
-                        <p>de redução em gastos com absenteísmo e saúde.</p>
-                    </div>
+            </div>
+
+            <div class="category-card">
+                <div class="category-icon">🎓</div>
+                <div class="category-content">
+                    <h3>Congressos & Cursos</h3>
+                    <p>Palestras, workshops e certificações profissionais.</p>
+                    <span class="count">38 eventos</span>
                 </div>
-                <div class="stat-card-home">
-                    <div class="stat-icon"><i class="fa-solid fa-heart"></i></div>
-                    <div class="stat-info">
-                        <h3>80%</h3>
-                        <p>dos colaboradores sentem-se mais valorizados.</p>
-                    </div>
+            </div>
+
+            <div class="category-card">
+                <div class="category-icon">🎉</div>
+                <div class="category-content">
+                    <h3>Festas & Shows</h3>
+                    <p>Eventos sociais com check-in via QR Code dinâmico.</p>
+                    <span class="count">67 eventos</span>
+                </div>
+            </div>
+
+            <div class="category-card">
+                <div class="category-icon">🎭</div>
+                <div class="category-content">
+                    <h3>Teatros & Cultura</h3>
+                    <p>Apresentações, exposições e reserva de assentos.</p>
+                    <span class="count">54 eventos</span>
+                </div>
+            </div>
+
+            <div class="category-card">
+                <div class="category-icon">📺</div>
+                <div class="category-content">
+                    <h3>Eventos Online</h3>
+                    <p>Transmissões ao vivo, webinars e cursos digitais.</p>
+                    <span class="count">89 eventos</span>
+                </div>
+            </div>
+
+            <div class="category-card">
+                <div class="category-icon">🛍️</div>
+                <div class="category-content">
+                    <h3>Loja Oficial</h3>
+                    <p>Equipamentos, camisetas, troféus e merchandising.</p>
+                    <span class="count">234 produtos</span>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="cta-banner">
-        <div class="container">
-            <h2>Dê ao seu time o combustível certo e veja a velocidade de entrega disparar.</h2>
-            <a href="login_cliente_pf.html" class="btn btn-primary btn-large">CONFIGURAR MEU DESAFIO</a>
+    <!-- Corporate Section -->
+    <section class="corporate-section" id="corporate">
+        <div class="corporate-container">
+            <div class="corporate-content">
+                <h2>Transforme seu Time com Velora Empresas</h2>
+                <p>Plataforma completa para empresas que querem engajar colaboradores através de eventos e desafios.</p>
+                
+                <ul class="corporate-benefits">
+                    <li>Dashboard dedicado para gestão de eventos</li>
+                    <li>Auditoria automática de performance via Strava</li>
+                    <li>Sistema de gamificação e reconhecimento</li>
+                    <li>Relatórios detalhados de ROI e engajamento</li>
+                    <li>Integração com sistemas de RH</li>
+                    <li>Suporte especializado 24/7</li>
+                </ul>
+
+                <button class="btn-corporate" onclick="window.location.href='cliente_corp.html'">Acessar Portal B2B</button>
+            </div>
+
+            <div class="corporate-image">
+                <img src="corporate_image.png" alt="Velora Empresas" onerror="this.src='https://via.placeholder.com/400x300?text=Velora+Empresas';">
+            </div>
         </div>
     </section>
 
-    <section class="features-section">
-        <div class="container">
-            <h2 class="text-center">Como funciona o Desafio Corporativo?</h2>
-            <div class="features-grid">
-                <div class="feature-item">
-                    <div class="feature-icon"><i class="fa-solid fa-gear"></i></div>
-                    <h3>Você Configura</h3>
-                    <p>Personalize camisas e itens com sua marca de forma organizada.</p>
+    <!-- Featured Events -->
+    <section class="featured-section">
+        <div class="section-title">
+            <h2>🔥 Eventos em Destaque</h2>
+            <p>Os eventos mais populares desta semana</p>
+        </div>
+
+        <div class="events-grid">
+            <div class="event-card">
+                <div class="event-image">🏃</div>
+                <div class="event-info">
+                    <h4>Desafio 180 Easy</h4>
+                    <p>Corrida virtual de 180km</p>
+                    <div class="event-price">R$ 100,00</div>
+                    <button class="btn-event" onclick="window.location.href='carrinho.html'">Inscrever</button>
                 </div>
-                <div class="feature-item">
-                    <div class="feature-icon"><i class="fa-solid fa-bolt"></i></div>
-                    <h3>O Time Acelera</h3>
-                    <p>Ensinamos o registro e validamos os dados com ranking em tempo real.</p>
+            </div>
+
+            <div class="event-card">
+                <div class="event-image">🚴</div>
+                <div class="event-info">
+                    <h4>Pedal Corporativo</h4>
+                    <p>Ciclismo em grupo - 50km</p>
+                    <div class="event-price">R$ 75,00</div>
+                    <button class="btn-event" onclick="window.location.href='carrinho.html'">Inscrever</button>
                 </div>
-                <div class="feature-item">
-                    <div class="feature-icon"><i class="fa-solid fa-shield-halved"></i></div>
-                    <h3>Tranquilidade RH</h3>
-                    <p>Gerimos produção e logística com relatórios precisos.</p>
+            </div>
+
+            <div class="event-card">
+                <div class="event-image">🎓</div>
+                <div class="event-info">
+                    <h4>Workshop de Performance</h4>
+                    <p>Otimize seu treino</p>
+                    <div class="event-price">R$ 150,00</div>
+                    <button class="btn-event" onclick="window.location.href='carrinho.html'">Inscrever</button>
                 </div>
-                <div class="feature-item">
-                    <div class="feature-icon"><i class="fa-solid fa-champagne-glasses"></i></div>
-                    <h3>A Grande Festa</h3>
-                    <p>Celebre o esforço de cada colaborador e fortaleça os laços.</p>
+            </div>
+
+            <div class="event-card">
+                <div class="event-image">🏆</div>
+                <div class="event-info">
+                    <h4>Corrida Solidária</h4>
+                    <p>Beneficência - Março</p>
+                    <div class="event-price">R$ 50,00</div>
+                    <button class="btn-event" onclick="window.location.href='carrinho.html'">Inscrever</button>
                 </div>
             </div>
         </div>
     </section>
 
-    <footer>
-        <div class="container">
-            <p>&copy; 2026 Velora Sports. Todos os direitos reservados.</p>
-            <p class="text-sm opacity-75">CNPJ: 64.560.012/0001-53 | Contato: (31) 2181-0829 | contato@velorasports.com.br</p>
-            <div class="footer-redes">
-                <a href="#"><i class="fa-brands fa-instagram"></i></a>
-                <a href="#"><i class="fa-brands fa-facebook"></i></a>
-                <a href="#"><i class="fa-brands fa-linkedin"></i></a>
+    <footer class="site-footer">
+        <div style="max-width: 1200px; margin: 0 auto; padding: var(--spacing-2xl) var(--spacing-xl);">
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--spacing-2xl); margin-bottom: var(--spacing-2xl);">
+                <div>
+                    <h4 style="color: var(--color-primary-blue); margin-bottom: var(--spacing-md);">Sobre</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                        <li><a href="#" style="color: var(--color-gray-600); text-decoration: none;">Quem Somos</a></li>
+                        <li><a href="#" style="color: var(--color-gray-600); text-decoration: none;">Missão</a></li>
+                        <li><a href="#" style="color: var(--color-gray-600); text-decoration: none;">Contato</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="color: var(--color-primary-blue); margin-bottom: var(--spacing-md);">Plataforma</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                        <li><a href="#" style="color: var(--color-gray-600); text-decoration: none;">Eventos</a></li>
+                        <li><a href="#" style="color: var(--color-gray-600); text-decoration: none;">Dashboard</a></li>
+                        <li><a href="#" style="color: var(--color-gray-600); text-decoration: none;">Loja</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="color: var(--color-primary-blue); margin-bottom: var(--spacing-md);">Legal</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                        <li><a href="#" style="color: var(--color-gray-600); text-decoration: none;">Termos</a></li>
+                        <li><a href="#" style="color: var(--color-gray-600); text-decoration: none;">Privacidade</a></li>
+                        <li><a href="#" style="color: var(--color-gray-600); text-decoration: none;">Cookies</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="color: var(--color-primary-blue); margin-bottom: var(--spacing-md);">Redes Sociais</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                        <li><a href="#" style="color: var(--color-gray-600); text-decoration: none;">Instagram</a></li>
+                        <li><a href="#" style="color: var(--color-gray-600); text-decoration: none;">Facebook</a></li>
+                        <li><a href="#" style="color: var(--color-gray-600); text-decoration: none;">LinkedIn</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div style="border-top: 1px solid var(--color-gray-200); padding-top: var(--spacing-lg); text-align: center; color: var(--color-gray-600);">
+                <p style="margin: 0;">&copy; 2026 Velora Sports. Todos os direitos reservados.</p>
             </div>
         </div>
     </footer>
 
     <script src="global.js"></script>
+    <script src="global_advanced.js"></script>
+    <script>
+        // Atualizar badge do carrinho
+        window.addEventListener('load', function() {
+            const cart = getCart();
+            document.getElementById('badgeCarrinho').innerText = cart.length;
+        });
+    </script>
 </body>
 </html>
